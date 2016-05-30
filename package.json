@@ -1,0 +1,27 @@
+{
+  "name": "nadachat",
+  "version": "1.0.0",
+  "description": "simple secure chat with end to end encyption",
+  "main": "nadachat.js",
+  "dependencies": { },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rndme/nadachat.git"
+  },
+  "keywords": [
+    "secure",
+    "e2e",
+    "chat",
+    "encypted"
+  ],
+  "author": "dandavis",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rndme/nadachat/issues"
+  },
+  "homepage": "https://github.com/rndme/nadachat#readme"
+}
