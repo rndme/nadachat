@@ -5,7 +5,7 @@
 
 * **Master Secret** - A large binary string of random byte values used to create _nonces_ that introduce novelty into the key derivation process.
 * **Conversation Keys** - A c521 ECC key pair, generated at run time and used to protect the shared symmetric key, master secret, and iv used for messaging.
-* **Message Key** - A 32 byte value used for a 256-bit AES_GCM key, derived from the previous key, index, and an 8 random bytes from the master secret.
+* **Message Key** - A 32 byte value used for a 256-bit AES_GCM key, derived from the previous key, index, and 8 random bytes from the master secret.
 
 ## Conversation Creation
 
