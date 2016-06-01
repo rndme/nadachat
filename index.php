@@ -166,7 +166,7 @@
 	</script>	
 
 	<!-- marked is used to make links clickable and allow full markdown formatting in messages w/o XSS risks -->
-	<script src=/js/marked.js integrity="sha256-#marked#"
+	<script src=/js/marked.js integrity="sha256-x425uGKPiyhQuub8JdKRiMy2i59+iop/9kBrqOpX7hs="
 		data-orig=https://github.com/chjj/marked></script>
 
 	<!-- sha3 is used to derive keys from keys and to uniform-ize randomness -->

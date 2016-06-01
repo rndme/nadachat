@@ -34,5 +34,9 @@ var temp=String(fs.readFileSync("index.php")).replace("#jquery#", execSync('open
 fs.writeFileSync("index.php", temp);
 
 
+//copy marked
+execSync('cp node_modules/marked/lib/marked.js js/marked.js');
+var temp=String(fs.readFileSync("index.php")).replace("#marked#", execSync('openssl dgst -sha256 -binary js/marked.js | openssl base64 -A'));
+fs.writeFileSync("index.php", temp);
 
 
