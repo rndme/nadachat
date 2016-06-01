@@ -1,16 +1,8 @@
-console.log("Hello, it's " + Date());
+//nadachat builder. needs linux, openssl, and npm.  there are probably better systems, but this works.
 
+//load up node utils:
 const execSync = require('child_process').execSync;
 const fs = require('fs');
-
-// build folders:
-try{
-  execSync('mkdir js');
-  execSync('mkdir css');
-  execSync('mkdir inbox');
-}catch(y){
-
-}
 
 
 //copy base template
@@ -21,18 +13,15 @@ execSync('cd node_modules/sjcl/ ; ./configure --with-ecc --with-gcm --with-hmac'
 execSync('cd node_modules/sjcl/ ; make');
 
 
-// copy scripts to places they need to be
+// copy scripts to places they need to be for the web, with integrity signatures:
 
 //copy sjcl
 execSync('cp node_modules/sjcl/core.js js/sjcl-core.js');
-//execSync('openssl dgst -sha256 -binary node_modules/sjcl/core.js | openssl base64 -A');
-
 
 //copy rndme
 execSync('cp node_modules/rndme/rndme.js js/rndme.js');
 var temp=String(fs.readFileSync("index.php")).replace("#rndme#", execSync('openssl dgst -sha256 -binary js/rndme.js | openssl base64 -A'));
 fs.writeFileSync("index.php", temp);
-
 
 //copy js-sha3
 execSync('cp node_modules/js-sha3/src/sha3.js js/sha3.js');
