@@ -1,0 +1,183 @@
+/* nadachat css */
+
+
+/* layout rules */
+body,	html {
+	margin:0;
+	padding:0;
+	overflow:hidden;
+	position:relative;
+	height:100vh;
+	color:#eee
+}
+
+main {
+	position:relative;
+	margin-top:4.25em;
+	height:calc(100vh - 8em);
+	overflow:auto
+}
+
+footer {
+	position: relative;
+	margin-top: .5em;
+	height: 3em;
+}
+
+
+/* specific control rules: */
+
+/* "compose" multi-line message input */
+#taMsg {
+	width:100%;
+	height:3em;
+	background:#222;
+	border:0;
+	color:#ddd;
+	padding:.33em;
+	resize:none
+}
+
+/* send button */
+button#btnSend {
+	padding-top: 0.8em;
+	width: calc(100% - 1em);
+	min-width: 3.6em;
+	margin-left: -1.4em;
+}
+
+/* hide compose and send by default */
+#btnSend,	#taMsg {
+	display:none
+}
+
+/* toggle message controls visibility via app.readyState aka body[data-mode] */
+  body[data-mode="5"] #btnSend,	
+  body[data-mode="5"] #taMsg {
+	display:block
+}
+
+/* the offered url copy-and-paste input for invites */
+#pageurl {
+	background:#bbb;
+	color:#000;
+	border:1px solid #777;
+	padding:.5em 1em;
+	width:35em;
+	max-width:97%
+}
+
+
+/* status panel css */
+
+/* move message panel off-screen extra to hide it's wide self when not needed */
+body[data-empty='false'] .panel.panel-primary.setup[data-rs='5'] {
+	left:-500vw
+}
+
+/* don't show panels until we can use them for feedback */
+body.loading  .panel.setup {
+	opacity:0
+}
+
+/* common status panels rules */
+.panel.setup {
+	opacity:1;
+	transition:533ms opacity,	333ms left;
+	position:absolute;
+	top:2em;
+	left:-220vw;
+	width:94.3%;
+	z-index:999999;
+	box-shadow: 0 0 10em 10em rgba(0,0,0,0.75);
+}
+
+/* trigger status panel visibility according to app.readyState:  */
+body[data-mode="0"] .panel.setup[data-rs="0"],	
+body[data-mode="1"] .panel.setup[data-rs="1"],	
+body[data-mode="2"] .panel.setup[data-rs="2"],	
+body[data-mode="3"] .panel.setup[data-rs="3"],	
+body[data-mode="5"] .panel.setup[data-rs="5"],	
+body[data-mode="6"] .panel.setup[data-rs="6"],	
+body[data-mode="7"] .panel.setup[data-rs="7"] {
+	left:3%
+}
+
+/* center panels where the user waits */
+#body .panel.setup[data-rs="0"] .panel-body ,
+#body .panel.setup[data-rs="1"] .panel-body {
+	text-align:center
+}
+
+
+/* messages list (inbox) */
+ul#ulList {
+	padding:0
+}
+
+/* de-accentuate the time since the message text is more important */
+#ulList time {
+	color:#999
+}
+
+#ulList li {
+	list-style: none;
+	margin-bottom: .3333em;
+	background: #222;
+	padding: .25em 0.5em;
+	white-space: pre-wrap;
+	color: #ddd;
+	font-size: 110%;
+}
+
+/* differentiate us-vs-them on message in list */
+#ulList li.you {
+	background:#444;
+	color:#bbb;
+	opacity:.8
+}
+
+
+/* navigation styles (top bar) */
+.nav>li {
+	position: relative;
+	display: inline-block;
+	
+}
+
+/* a splash of color */
+a.navbar-brand b {
+	color:#3ccf1b
+}
+
+/* align smaller text with "big" header */
+.navbar-inverse .navbar-nav>li>a {
+	padding:.3em 2em;
+	top:.2em;
+	color:#ddd;
+}
+
+/* scoot centered control to the left */
+a#lnkBeep {
+	margin-left: -2.5em;
+}
+
+/* scoot left badge to the right */
+.col-xs-4:first-child .navbar-brand {
+	margin-left: 0em;
+}
+
+/* mobile/desktop adjustments */
+@media (min-width:768px) {
+	.navbar-inverse .navbar-nav>li>a {
+		top:.9em
+	}
+}
+
+
+/* bootstrap and theme one-off adjustments: */
+li p { margin: 0; }
+.msg .btn { margin-top: 0.1em; }
+#lnkBeep b {	color: #fff;font-weight: normal; }
+.progress-bar {	width:100%; }
+.progress{	width: 35em; 	margin: 0 auto;}
