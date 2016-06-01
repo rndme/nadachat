@@ -42,7 +42,7 @@ self.addEventListener("message", function(evt) {
 	}//end if ecc?
 
 	
-	if(e.type == "encode2") { // encode using ECC public key
+	if(e.type == "encode") { // encode using ECC public key
 		try {
 			var pub=e.pub.split ? JSON.parse(e.pub) : e.pub,
 			curve = sjcl.ecc.curves.c521,
@@ -57,7 +57,7 @@ self.addEventListener("message", function(evt) {
 	}//end if encode?
 	
 	
-	if(e.type == "decode2") { // decode using ECC secret key
+	if(e.type == "decode") { // decode using ECC secret key
 		try {		
 			var sec = new sjcl.ecc.elGamal.secretKey(
 				sjcl.ecc.curves.c521,  
