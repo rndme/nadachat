@@ -9,17 +9,18 @@ sjcl.json.defaults.ts=128;
 
 // add entropy to the fortuna instance used by sjcl:
 sjcl.random.addEntropy(STAMP); // use entropy from PHP and DOM
-sjcl.random.addEntropy(stamp()); // 
-sjcl.random.addEntropy(getRandomFromCrypto(94));
+sjcl.random.addEntropy(stamp());  // use as much local entropy as possible
+sjcl.random.addEntropy(Math.random().toString(2).split("").filter(/./.test, /01/).length); // mostly because it does a ms or two of work to spin following timers
+sjcl.random.addEntropy(getRandomFromCrypto(94)); // use OS=provided values, munged with timing data
 sjcl.random.addEntropy(location.href); // use blob url for unpredictable values 
-sjcl.random.addEntropy(get64FromTimeNew());
+sjcl.random.addEntropy(timeserial()+timeserial()); // yet more timing data
+
 
 
 // sends a response or error back to the web app:
 function send(type, data){
 	self.postMessage({type:type, data: data});
 }
-
 
 
 
@@ -104,7 +105,7 @@ function stamp(){ // returns a bunch of random digits each time it's called
   return [
     Math.random(), 
     Math.floor(performance.now()*100), 
-    (Date.now()-147298194451)/(setTimeout(Boolean)+2), 
+    (Date.now()-147298194451)/(location.href.match(/\d/g).length), 
     random(1)[0]
   ].join("").replace(/\D/g,"").replace(/^0+|0+$/g,""); 
 }
@@ -128,45 +129,7 @@ function getRandomFromCrypto(chars) {
 } //end getRandomFromCrypto()
 
 
-function munge(a, b) {return Math.random() > .5 ? 1 : -1;}
-	
-
-
-function get64FromTimeNew() {
-	var ua = new Uint32Array(1),
-		out = random(36),
-		rxd = /[523403467]/,
-		limit = 0,
-		round = 0,
-		roundLimit =40,
-		seeds = random(roundLimit + 3),
-		loads = random(roundLimit + 3),
-		r = [],
-		times = [],
-		t = (Date.now().toString().slice(-3).slice(1)*1),
-		st = performance.now(),
-		chars = "wp7aY_xzcFLfmoyQqu51KWsZEvOb9XJSP3tin06dR-ClUkGeMVIjgr2NDH4hBT8A".split("").sort(munge).join("").repeat(16).split(""),
-		mx3 = chars.length;
-
-
-	function random(n) {return [].slice.call(crypto.getRandomValues(new Uint32Array(n)));}
-	function work() {return Math.random().toString(16).split("").filter(rxd.test, rxd).length;}
-	function snap() {return String(("" + performance.now()).match(/\.\d\d/) || "0").replace(/\D/g, "").slice(-2) || 0;}
-
-
-	while(performance.now() < st + 1) t += work(limit++) ;
-	limit = Math.max(limit, 2);
-	while(true) {
-		round++;
-		for(var i = ((loads[round] / 4294967296) * (limit / 8.5)) + 1; i > 0; i--) t += work();
-		var slot = Math.floor((seeds[round] / 4294967296) * 32);
-		out[slot] = out[slot] + t + (times[times.length] = +snap());
-		if(round > roundLimit) break;
-	}
-
-	return out.map(function(a, b, c) {
-		var l2 = ("" + a).slice(-3);
-		return chars[(l2[2] + l2[1] + l2[0]) - 16] || ""; // toss ~16/1000 chars
-	}).filter(String).join("").concat(chars.join("")).slice(20,52);
-
-} //~15ms on "mobile" (moto e)
+// a sync timestamp method, returns a new 10-digit string each time
+function timeserial() {
+	return(Date.now() / (performance.now() * 100)).toString().split("").filter(/./.test, /\d/).slice(-10).join("");
+};
