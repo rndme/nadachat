@@ -1,7 +1,7 @@
 <?php
 	$NONCE=base64_encode(openssl_random_pseudo_bytes(16));
 	//header("Strict-Transport-Security: max-age=31536000; includeSubDomains"); // this is persisted by useragents, so it can't be used...
-	header("Content-Security-Policy-Report-Only: default-src 'self'; img-src 'self' data:; style-src 'self' fonts.googleapis.com cdnjs.cloudflare.com; font-src cdnjs.cloudflare.com fonts.gstatic.com; script-src 'self' 'nonce-" . $NONCE .  "'; child-src data: blob:");
+	header("Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' fonts.googleapis.com cdnjs.cloudflare.com; media-src data:; font-src cdnjs.cloudflare.com fonts.gstatic.com; script-src 'self' 'nonce-" . $NONCE .  "'; child-src data: blob:");
 ?><!DOCTYPE html>
 <html lang=en>
   <head>
@@ -19,7 +19,7 @@
     <!-- Bootstrap core CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/cyborg/bootstrap.min.css" rel="stylesheet">
     <!-- Application CSS -->
-	<link href="/css/main.css" rel=stylesheet>
+    <link href="css/main.css" rel=stylesheet>
 	
 </head>
 <body data-mode=0 id=body class=loading>
@@ -59,7 +59,7 @@
 				</div> 
 				<div class=panel-body>
 				<div class=progress>
-					<div class="progress-bar progress-bar-striped progress-bar-warning active" role=progressbar></div>
+					<div class="progress-bar progress-bar-striped progress-bar-warning " role=progressbar></div>
 				</div> <br>
 					Generating Keys, please stand by.
 			  </div> 
@@ -72,14 +72,16 @@
 					</h3> 
 				</div> 
 				<div class="panel-body">
-					Send someone <a href id=pageurlLink disabled> this URL </a> to chat :  <br><br>
-					<input id=pageurl size=50 ><br><br>
-					When they arrive on the link, you'll be able to chat.
-					<hr>
 					<div class=progress>
 						<div class="progress-bar progress-bar-striped active" role=progressbar></div>
 					</div> <br>
-					Waiting for other person to join...
+					Waiting for someone else to join...
+									<hr>
+					
+					Send someone <a href id=pageurlLink disabled> this URL invite</a>:  <br><br>
+					<input id=pageurl size=50 ><br><br>
+					When they arrive on the link, you'll be able to securely chat.
+
 			  </div> 
 			</div>		
 						
@@ -90,10 +92,28 @@
 					</h3> 
 				</div> 
 				<div class=panel-body>
-				<progress></progress> <br>
-					Confirming and Encrypting...
+					<div class=progress>
+						<div class="progress-bar progress-bar-striped " role=progressbar></div>
+					</div> <br>
+					Confirming Invite and Connecting.
 			  </div> 
 			</div>
+
+						
+			<div class="panel panel-default setup" data-rs=3> 
+				<div class=panel-heading> 
+					<h3 class=panel-title>
+						Secure Invite Found!
+					</h3> 
+				</div> 
+				<div class=panel-body>
+					<div class=progress>
+						<div class="progress-bar progress-bar-striped " role=progressbar></div>
+					</div> <br>
+					Encrypting secure transport...
+			  </div> 
+			</div>
+						
 						
 			<div class="panel panel-primary setup" data-rs=5> 
 				<div class=panel-heading> 
@@ -102,11 +122,11 @@
 					</h3> 
 				</div> 
 				<div class=panel-body>
-					ready to chat
+					Ready to chat
 			  </div> 
 			</div>
 							
-			<div class="panel panel-primary setup" data-rs=6> 
+			<div class="panel panel-warning setup" data-rs=6> 
 				<div class=panel-heading> 
 					<h3 class=panel-title> 
 						Connection Idle
@@ -142,6 +162,19 @@
 			<!-- message container -->
 			<ul id=ulList></ul>	   
 		
+		
+			<div id=info class="panel panel-default setup"  >
+				<div class=panel-heading> 
+					<h3 class=panel-title> 
+						nadachat
+					</h3> 
+				</div> 
+				<div class=panel-body>				
+					<p>Welcome!</p>
+				</div>
+			</div>
+		
+		
 		</div> <!-- // #box -->
 	</main>
 
@@ -166,23 +199,23 @@
 	</script>	
 
 	<!-- marked is used to make links clickable and allow full markdown formatting in messages w/o XSS risks -->
-	<script src=/js/marked.js integrity="sha256-x425uGKPiyhQuub8JdKRiMy2i59+iop/9kBrqOpX7hs="
+	<script src=js/marked.js integrity="sha256-x425uGKPiyhQuub8JdKRiMy2i59+iop/9kBrqOpX7hs="
 		data-orig=https://github.com/chjj/marked></script>
 
 	<!-- sha3 is used to derive keys from keys and to uniform-ize randomness -->
-	<script src=/js/sha3.js intregrity="sha256-BpS8p6Ij/LTe5PANKG9Kwv3Qn2riUoe6ASS+TrX3Be0=" 
+	<script src=js/sha3.js intregrity="sha256-BpS8p6Ij/LTe5PANKG9Kwv3Qn2riUoe6ASS+TrX3Be0=" 
 		data-orig=https://github.com/emn178/js-sha3/></script>
 
 	<!-- rndme is used to gather randomness from motion (on mobile devices) and timing data -->
-	<script src=/js/rndme.js integrity="sha256-YRwyFKcgux7NHabeEHxUzD00pBhNIPd8IeN4mxyISO4=" 
+	<script src=js/rndme.js integrity="sha256-YRwyFKcgux7NHabeEHxUzD00pBhNIPd8IeN4mxyISO4=" 
 		data-orig=https://github.com/rndme/rndme/></script>
 
 	<!-- jquery is used to connect the view to the logic and handle interaction event -->
-	<script src=/js/jquery.js integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+	<script src=js/jquery.js integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
 		data-orig=https://code.jquery.com/></script>
 
 	<!-- main contains all the application-specific logic, with the exception of the crypto operations, which are done by webworkers -->
-	<script src=/js/main.js></script>
+	<script src=js/main.js></script>
 	
   </body>
 </html>
