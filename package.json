@@ -1,6 +1,6 @@
 {
   "name": "nadachat",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "simple secure chat with end to end encyption",
   "main": "nadachat.js",
   "dependencies": {
@@ -10,9 +10,7 @@
     "rndme": "^1.2.1",
     "sjcl": "^1.0.3"
   },
-  "devDependencies": {
-
-  },
+  "devDependencies": {},
   "scripts": {
     "build": "node build.js",
     "test": "echo \"Error: no test specified\" && exit 1"
