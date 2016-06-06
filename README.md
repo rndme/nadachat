@@ -3,7 +3,7 @@ simple secure chat with end to end encyption
 
 
 ## About
-more info soon.
+A simple and safe chat app using only php, css, js, and html. Designed to be easy to distribute and customize, nadachat can be forked and branded, enjoyed online, or used as a starter for a more complicated secure application.
 
 ## Installing
 Download the zip and extract to a web folder on apache, or clone the repo to the same.
