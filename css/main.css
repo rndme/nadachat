@@ -11,11 +11,16 @@ body,	html {
 	color:#eee
 }
 
+body {
+	/* background: linear-gradient(to bottom, rgba(30,87,153,1) 0%,rgba(12, 15, 18, 0.45) 100%); */
+	background-color: #000;
+	box-shadow: 0 0 1em #111 inset;
+}
 main {
 	position:relative;
 	margin-top:4.25em;
-	height:calc(100vh - 8em);
-	overflow:auto
+	height:calc(100vh - 8.2em);
+	overflow:auto;
 }
 
 footer {
@@ -35,13 +40,14 @@ footer {
 	border:0;
 	color:#ddd;
 	padding:.33em;
-	resize:none
+	resize:none;
+	outline-color: #fff;
 }
 
 /* send button */
 button#btnSend {
 	padding-top: 0.8em;
-	width: calc(100% - 1em);
+	width: 100%;
 	min-width: 3.6em;
 	margin-left: -1.4em;
 }
@@ -57,6 +63,10 @@ button#btnSend {
 	display:block
 }
 
+body[data-mode="5"] #info{
+	display: none;
+}
+
 /* the offered url copy-and-paste input for invites */
 #pageurl {
 	background:#bbb;
@@ -67,11 +77,18 @@ button#btnSend {
 	max-width:97%
 }
 
+/* jazz up "main" waiting panel */
+[data-rs="1"] .panel-body {
+	padding: 1em;
+}
+
 
 /* status panel css */
 
 /* move message panel off-screen extra to hide it's wide self when not needed */
-body[data-empty='false'] .panel.panel-primary.setup[data-rs='5'] {
+body[data-empty='false'] .panel.panel-primary.setup[data-rs='5'],
+body[data-empty='false'] .panel.panel-primary.setup[data-rs='6'],
+body[data-empty='false'] .panel.panel-primary.setup[data-rs='7']   {
 	left:-500vw
 }
 
@@ -82,15 +99,35 @@ body.loading  .panel.setup {
 
 /* common status panels rules */
 .panel.setup {
-	opacity:1;
-	transition:533ms opacity,	333ms left;
-	position:absolute;
-	top:2em;
-	left:-220vw;
-	width:94.3%;
-	z-index:999999;
-	box-shadow: 0 0 10em 10em rgba(0,0,0,0.75);
+	opacity: 0;
+	transition: 533ms opacity,	333ms height;
+	position: relative;
+	top: 2em;
+	left: -220vw;
+	width:100%;
+	z-index: 999999;
+	height: 0em;
+	overflow: hidden;
+	margin-bottom: 0em;
+	margin-top: -0.5em;
+	border-color: #222;
 }
+
+body .panel.setup>.panel-heading {
+	padding: 0.33em;
+	background: linear-gradient(to bottom, rgb(34, 34, 34) 0%,rgba(0, 0, 0, 0.5) 100%);
+	color: #ddd;
+	font-size: 200%;
+	text-shadow: 0 0 1px #000;
+	cursor: default;
+  user-select: none;           
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* IE/Edge */
+  -webkit-touch-callout: none; /* iOS Safari */
+  	border-color: #222;
+}
+
 
 /* trigger status panel visibility according to app.readyState:  */
 body[data-mode="0"] .panel.setup[data-rs="0"],	
@@ -100,19 +137,29 @@ body[data-mode="3"] .panel.setup[data-rs="3"],
 body[data-mode="5"] .panel.setup[data-rs="5"],	
 body[data-mode="6"] .panel.setup[data-rs="6"],	
 body[data-mode="7"] .panel.setup[data-rs="7"] {
-	left:3%
+	height: auto;
+	opacity: 1;
+	left: 0em;
 }
 
 /* center panels where the user waits */
 #body .panel.setup[data-rs="0"] .panel-body ,
-#body .panel.setup[data-rs="1"] .panel-body {
+#body .panel.setup[data-rs="1"] .panel-body ,
+#body .panel.setup[data-rs="3"] .panel-body   {
 	text-align:center
 }
 
+div#info {
+	margin-top: 2em;
+	height: auto;
+	opacity: 1;
+	left: 0;
+}
 
 /* messages list (inbox) */
 ul#ulList {
-	padding:0
+	padding:0;
+	margin-top: 3em;
 }
 
 /* de-accentuate the time since the message text is more important */
@@ -120,20 +167,25 @@ ul#ulList {
 	color:#999
 }
 
+/* pull list up when not any status messages:  */
+body[data-mode="5"] ul#ulList {
+	margin-top: -1em;
+}
+
 #ulList li {
 	list-style: none;
 	margin-bottom: .3333em;
-	background: #222;
+	background: #1b1b1b;
 	padding: .25em 0.5em;
 	white-space: pre-wrap;
-	color: #ddd;
+	color: #fff;
 	font-size: 110%;
 }
 
 /* differentiate us-vs-them on message in list */
 #ulList li.you {
-	background:#444;
-	color:#bbb;
+	background:#373737;
+	color:#ccc;
 	opacity:.8
 }
 
@@ -180,4 +232,7 @@ li p { margin: 0; }
 .msg .btn { margin-top: 0.1em; }
 #lnkBeep b {	color: #fff;font-weight: normal; }
 .progress-bar {	width:100%; }
-.progress{	width: 35em; 	margin: 0 auto;}
+.progress{	width: 35em; 	margin: 0 auto; max-width: 100%;}
+.panel-heading { padding: 0.33em;}
+.panel-body {padding: 5px;}
+.navbar-inverse {background: linear-gradient(to bottom, rgb(44, 44, 44) 0%,rgba(0, 0, 0, 0.45) 100%);}
