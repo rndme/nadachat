@@ -8,6 +8,14 @@ A simple and safe chat app using only php, css, js, and html. The application co
 ## Installing
 Download the zip and extract to a web folder on apache, or clone the repo to the same.
 
+You should also run an hourly cron job on a shell script to clear conversations files older than an hour:
+
+```sh
+find /PATH/TO/nadachat/api/inbox -mmin +60 -type f -name "*.key"\
+  -exec rm -f {} \;
+```
+
+
 ## Building (not needed to use)
 If updating a JS lib or altering the _index template, you need to rebuild the application.
 
