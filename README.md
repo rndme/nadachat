@@ -6,10 +6,10 @@ simple secure chat with end to end encyption
 more info soon.
 
 ## Installing
-Download the zip and extract to a web folder on apache, or clone the repo.
+Download the zip and extract to a web folder on apache, or clone the repo to the same.
 
 ## Building (not needed to use)
-If updaing a JS lib or altering the _index template, you need to rebuild the application.
+If updating a JS lib or altering the _index template, you need to rebuild the application.
 
 Once downloaded, run `npm install` to setup depends, and `npm run build` to re-generate SHA hash on _index/index.php.
 
