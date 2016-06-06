@@ -8,15 +8,15 @@ Goals:
 
 *//////////////////////////////////////////////
 // configuration:
-$messageFolderPath = $_SERVER['DOCUMENT_ROOT'] . '/inbox/' ; // a rw folder where keys and message temporarily live
+$messageFolderPath =  __DIR__ .  '/inbox/' ; // a rw folder where keys and message temporarily live
 $debug = FALSE; // should text results be echoed to host after other-wise void commands run?
-$bufferSize = 4096;	// size of each message, minimum. for hiding conversation details over the net, also sets stored message queue size (double this value)
+$bufferSize = 3076;	// size of each message, minimum. for hiding conversation details over the net, also sets stored message queue size (double this value)
 $useUpgradedFilePerms = TRUE; // should chattr be applied to the message files (see inline usage, linux only, requires shell_exec())
 
 ///////////////////////////////////////////////
 // setup page and php:
 error_reporting(0);	// don't leak secrets
-usleep(rand(123456, 230000));// at least TRY to complicate timing and DOS attacks
+usleep(rand(103456, 170000));// at least TRY to complicate timing and DOS attacks
 header("Content-Type:text/plain;charset=UTF-8"); // our JSON is not always valid, so use text
 header("Cache-Control:no-cache"); // me well be back, don't ignore future requests
 
@@ -61,14 +61,15 @@ function fetch(){ // use long-polling to return  a delayed read of the conversat
 	$chunkSize= $bufferSize * 1;
 	
 	while(1){
-		$timeFile = strtotime(date(DATE_RFC2822, filemtime($FILE)));	
+		$strTimeFile = date(DATE_RFC2822, filemtime($FILE));
+		$timeFile = strtotime($strTimeFile);	
 		$diff= $timeLast - $timeFile;
 		$misses++;			
-		if( ($diff < 1) || $misses > 56 ){
-			if(filesize($FILE)> $bufferSize) $chunkSize = $bufferSize * 4; // if extra big, it's a private key packet.  (send() will clean it up soon enough)
-			die(substr( str_repeat(" ", $chunkSize) . file_get_contents($FILE), -$chunkSize));	 // send tail of file only
+		if( ($diff < 0) || $misses > 96 ){
+			if(filesize($FILE)> $bufferSize) $chunkSize = 30 * 1024 ; // if extra big, it's a private key packet.  (send() will clean it up soon enough)
+			die(substr( str_repeat(" ", $chunkSize) . $strTimeFile . "\n" . file_get_contents($FILE), -$chunkSize));	 // send tail of file only
 		}
-		usleep(333000);
+		usleep(280000);
 		clearstatcache();	
 	} // wend
 } // end fetch()
@@ -78,6 +79,7 @@ function send(){ // append a message to file, truncating file if too big
 	if( filesize( $FILE )  > ($bufferSize*2) )	write( substr( str_repeat(" ", ($bufferSize*2)) . file_get_contents($FILE), -($bufferSize*2))); // if file is too big, truncate it to fit
 	$payload=array("date"=>strtotime(date(DATE_RFC2822))*1000, "cmd"=> 'send', "user"=>$user, "tx"=>$tx, "data"=>$data );
 	append($payload);
+	//$bufferSize-=138;
 	reply("wrote msg ");  
 }
 
@@ -106,7 +108,7 @@ function begin(){ // clear AES keys and start conversation
 }
 
 function leave(){ // a user left, clear conversation history
-	write(" ");
+	write("#LEFT#");
 	reply("sanitized conversation");
 }
 
@@ -122,7 +124,8 @@ function clean($str){
 // sends a response of a uniform size, if debug is active
 function reply($resp){
 	global $debug, $bufferSize;
-	if($debug) echo  substr( $resp , str_repeat(" ", $bufferSize) , 0, $bufferSize);  	
+	if($debug) die(  substr( $resp , str_repeat(" ", $bufferSize) , 0, $bufferSize) );  	
+	echo str_repeat(" ", $bufferSize);
 }
 
 // replaces file contents with string passed
