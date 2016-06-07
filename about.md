@@ -120,9 +120,8 @@ The EFF provides a [checklist of features](https://www.eff.org/node/82654) to ga
  1. **Are past communications secure if your keys are stolen?** Yes.
  1. **Is the code open to independent review?** Yes.
  1. **Is security design properly documented?** Yes, [available here](https://github.com/rndme/nadachat/blob/master/security.md).
- 1. **Has there been any recent code audit?** No. Soon? donate?
+ 1. **Has there been any recent code audit?** No. Soon? 
  
- The checklist has nadachat looking pretty good, ecxept 
 
 
 ## In the interest of being open
