@@ -134,20 +134,19 @@ function disconnected(){
 }
 
 
-(function(){ // build API methods with pre-fills:
-	["publicKey", "privateKey", "ask", "send", "fetch", "leave", "begin"].forEach(function(f){
-		api[f]=function(e){ 
-			setTimeout(function(){ 
-			return $.post( "/api/", {
-				cmd: f,
-				room: app.room,
-				tx: serial().slice(-12),
-				user: +app.isAlice,
-				data: e
-			});
-		};
-	});
-}());
+// build API methods with pre-fills:
+["publicKey", "privateKey", "ask", "send", "fetch", "leave", "begin"].forEach(function(method){
+	api[method] = function(e){ 
+		return $.post( "/api/", {
+			cmd: method,
+			room: app.room,
+			tx: serial().slice(-12),
+			user: +app.isAlice,
+			data: e
+		}); // end post()
+	};// end apu method
+}); // end forEach()
+
 
 
 ///////////////////////////////////////////////
@@ -279,7 +278,7 @@ window.addEventListener("offline", disconnected, false);
 						w.onerror=console.error.bind(console);
 						w.onmessage=function(e){
 							line.data=e.data.data.trim();
-							$("#ulList").append(app.ITEM(line));
+							$("#ulList").append(app.ITEM(line).trim().replace(/<a /g, "<a target=_blank "));
 							$("#ulList li:last-child")[0].scrollIntoView(true);
 							STAMP+=Math.floor(performance.now()*100).toString().slice(-1);
 							w.terminate();
