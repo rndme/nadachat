@@ -1,7 +1,15 @@
 <?php
-	$NONCE=base64_encode(openssl_random_pseudo_bytes(16));
+	$NONCE=base64_encode(getGoodRandom(16));
 	//header("Strict-Transport-Security: max-age=31536000; includeSubDomains"); // this is persisted by useragents, so it can't be used...
 	header("Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' fonts.googleapis.com cdnjs.cloudflare.com; media-src data:; font-src cdnjs.cloudflare.com fonts.gstatic.com; script-src 'self' 'nonce-" . $NONCE .  "'; child-src data: blob:");
+	
+	function getGoodRandom($bytes = 32){
+		if (function_exists('random_bytes')) return random_bytes($bytes );
+		if (function_exists('openssl_random_pseudo_bytes')) return openssl_random_pseudo_bytes($bytes );
+		if (function_exists('mcrypt_create_iv')) return mcrypt_create_iv($bytes , MCRYPT_DEV_URANDOM);
+		if (@is_readable('/dev/urandom')) return shell_exec('head -c '. $bytes .' < /dev/urandom');
+	}
+
 ?><!DOCTYPE html>
 <html lang=en>
   <head>
@@ -19,7 +27,7 @@
     <!-- Bootstrap core CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/cyborg/bootstrap.min.css" rel="stylesheet">
     <!-- Application CSS -->
-    <link href="css/main.css" rel=stylesheet>
+	<link href="css/main.css" rel=stylesheet>
 	
 </head>
 <body data-mode=0 id=body class=loading>
@@ -75,7 +83,7 @@
 					<div class=progress>
 						<div class="progress-bar progress-bar-striped active" role=progressbar></div>
 					</div> <br>
-					Waiting for someone else to join...
+					Waiting for other party to join...
 									<hr>
 					
 					Send someone <a href id=pageurlLink disabled> this URL invite</a>:  <br><br>
@@ -166,11 +174,32 @@
 			<div id=info class="panel panel-default setup"  >
 				<div class=panel-heading> 
 					<h3 class=panel-title> 
-						nadachat
+						About
 					</h3> 
 				</div> 
 				<div class=panel-body>				
-					<p>Welcome!</p>
+					<div class=row>
+					<div class="col-md-8 col-md-offset-2">
+					<p>nadachat is a free secure messaging service. </p>
+					
+					<div>
+						It uses strong end-to-end encryption to protect conversations from:
+					</div>
+					
+					  <ul class=list>
+						<li>hackers
+						<li>criminals
+						<li>service providers
+						<li>overseers
+					  </ul>
+						It's a free service as well as an open-source web application you can host yourself.
+					 <ul class=list>
+						<li><a href="https://github.com/rndme/nadachat/blob/master/about.md" target=_blank >Read more about nadachat</a>
+						<li><a href="https://github.com/rndme/nadachat/blob/master/security.md" target=_blank>Review nadachat's security strategy</a>
+						<li><a href="https://github.com/rndme/nadachat" target=_blank>View nadachat's Source Code on GitHub</a>
+					</ul>
+					</div>
+					</div>
 				</div>
 			</div>
 		
@@ -189,15 +218,15 @@
 	  
     </div><!-- /.container -->
 
-	<!-- add some entropy from php's openssl_random_pseudo_bytes() to compliment client-produce randomness -->
+	<!-- add some secure entropy from php to compliment the client-produced randomness -->
 	<script nonce="<?php echo $NONCE; ?>">
-		var STAMP= atob("<?php echo base64_encode(openssl_random_pseudo_bytes(48));?>") // seed from php
+		var STAMP= atob("<?php echo base64_encode(getGoodRandom(96));?>") // seed from php
 			.split("")
 			.map(function(a){return a.charCodeAt(0).toString(10).slice(-2);}) // convert bytes to digits
 			.join("");
 			document.currentScript.remove(); // abundance of caution against XSS (STAMP is mixed later)
 	</script>	
-
+	
 	<!-- marked is used to make links clickable and allow full markdown formatting in messages w/o XSS risks -->
 	<script src=js/marked.js integrity="sha256-#marked#"
 		data-orig=https://github.com/chjj/marked></script>
