@@ -29,15 +29,21 @@ app = {
 			// gen ecc curve, ajax to server, update hash and on-screen info from splash to waiting...
 			var st = performance.now(),
 				w = new Worker(workerURL);
+				
+			STAMP+= rndme._stamp();
+			STAMP+= rndme.crypto("int", 150, Number);
+				
 			w.onerror = console.error.bind(console);			
 			w.onmessage = function(e) {
 				var ob = e.data.data,
 					et = performance.now();
-					
-				rndme.time("int", 40).then(function(s) {
-					STAMP += s;
-				});
 
+				setTimeout(function(){
+					rndme.time("int", 1000).then(function(s) {
+						STAMP += s.slice(-256) + rndme._stamp() + rndme.crypto("int", 150, Number).slice(-64);
+					});
+				}, 500);
+				
 				app.pubkey = ob;				
 				api.publicKey({
 					pubkey: {
@@ -53,7 +59,12 @@ app = {
 			
 			w.postMessage({
 				type: "ecc",
-				STAMP: STAMP
+				STAMP: STAMP + 
+					rndme._stamp() + 
+					[].join.call(crypto.getRandomValues(new Int32Array(32)), "").replace(/\W/g,"")+
+					rndme.crypto("int", 300, Number) + 
+					Math.random().toString().slice(3)+
+					rndme._stamp() 
 			});
 
 		} else {
@@ -167,7 +178,7 @@ $("#btnSend").click(function(e){
 		});	
 	};
 	
-	w.postMessage({type:"aesenc", key: getMessageKeyByIndex(messageIndex) , data:  $("#taMsg").val(), });
+	w.postMessage({type:"aesenc", key: getMessageKeyByIndex(messageIndex) , data:  $("#taMsg").val(), STAMP: STAMP });
 	//$("#taMsg").val("");
 });//end click()
 
@@ -382,14 +393,14 @@ function stamp(){
 
 
 // build up some un-predictable values with what's available in the browser:
-var st=performance.now()+1.5; // helps make Math.random() safer and buys time for other number generation methods, just in case (legacy)
+var st=performance.now()+2.5; // helps make Math.random() safer and buys time for other number generation methods, just in case (legacy)
 while(performance.now()<st) Math.random(); // runs the performance.now clock up for better rndme.time() seeds
 
 // add entropy from dom to that from php:
 STAMP+= stamp();
 
 // add some entropy from window.crypto (munged with timing data)
-STAMP+= rndme.crypto("int", 610, Boolean).slice(-40);
+STAMP+= rndme.crypto("int", 300, Boolean).slice(-256);
 
 // add entropy from orientation and acceleration sensors on portable devices and some laptops
 rndme.motion("int", 40, function(s){
@@ -397,19 +408,21 @@ rndme.motion("int", 40, function(s){
 });
 
 setTimeout(function(){ // load the worker code into a variable so that we can spawn fresh new workers without network IO:
-	rndme.time("int", 40).then(function(s){
-		STAMP+=s;
+	rndme.time("int", 1000).then(function(s){
+		STAMP = s + STAMP;
 		$.get({ dataType: 'text', url: "/js/sjcl-core.js"}, function(coreCode){	
 			$.get({ dataType: 'text', url: "/js/rsaworker.js"}, function(a,b,c){	
-				workerURL=URL.createObjectURL(new Blob(["var STAMP="+STAMP+";var window=self;"+ coreCode +";\n\n\n"+a],{type:"text/plain"}));
-				STAMP=STAMP.slice(-64).split("").reverse().join("");				
+				var poly=';var crypto2={getRandomValues: function(r){r.forEach(function(a,b){r[b]=Math.floor(4294967296*Math.random());}); return r;}}; if(typeof crypto==="undefined") crypto=crypto2;';
+				
+				workerURL=URL.createObjectURL(new Blob(["var STAMP="+STAMP+";var window=self;"+ poly+ coreCode +";\n\n\n"+a],{type:"text/plain"}));
+				STAMP= rndme._stamp() + STAMP.slice(-200).split("").reverse().join("") + rndme._stamp();
 				window.WORKER=new Worker(workerURL);
 				WORKER.onerror=console.error.bind(console);
 				setTimeout(app.BOOT.bind(app), 38);
 			}); // end worker code fetch;
 		});//end core fetch
 	});//end time() cb
-}, 200 );	
+}, 120 );	
 
 
 var beeper=new Audio("data:audio/wav;base64,UklGRm4IAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgATElTVCwAAABJTkZPSUFSVAoAAABkYW5kYXZpcwAASUNNVA4AAABwdWJsaWMgZG9tYWluAGRhdGEWCAAAgICAgICAgICAgH+Af4B/gICAgIB/gH+Af4CAgICAgH+Af4B/gIB/gIB/gH+Af4B/gIB/gH+AgH+Af4B/gIB/gIB/gICAgIB/gH+AgICAgH+Af4B/gIB/gH+AgH+Af4CAf4B/gICAf4B/gH+Af4CAf4B/gH+Af4B/gH+AgH+Af4CAf4B/gICAf4B/gH+AgH+AgH+Af4B/gH+Af3+Af4CAgH9/f4CAf4CAgXKWgnKEgXWjZXaiaYmCeYiCZqNvaqJvgIV1iYlbo4Bdm3x+gHeFlFSXkVuTgH2Ed3qgWYWbYYuCfId4cKdheJ9oh4N5iIBmq2troHCBgnmIh12kfGKbd4CBeISTV5qJX5Z8gIN2fp1Xj5Vgj32AhXZ3plt/nWWJf36He2uoaHCfbYV+fImCYKd2Zp10g394iI1Zn4Vgl3mCgXaCmVeSkmCQfICEdnijWYObZIl/f4d6bahkdZ9qhn98iIFiqHBpn3KCgHiIi1mjg2GZeICDiIJ1eIGDjHl5cXWLi4+Kd2xwdoqUjY1xcnB6iYuLgnZ4e4CLgH92d4WHjI52bnNyipGSj3Btb3iHkY+LcXN5eoiFhX52f4eDh312cXeIj5GLdG1reImQlYp0cHB7hoqMhHd3fYCGgX52d4SLjYl3cG94iZCUiXVtbXmJjpCIc3N2fYiDhX12foaGiXp2dHaGj5CKdmtteIiQkYt0cHF8h4mLgXd6foGIgHx3eISKjYp3b294iY+UinRtbnqHjo+GdXR3f4eEg3aFapGBdXqZbn6Sg2eMhnB9jXV5mXx6h4NvgX58eJ13gYKCa4xwhX6WbomEe22UaoKFjXCOgXxwjnCCh4hwi4V4eYl4fIh8d4aOdIOHenWJcn+Ck3KLf31wjGuHgJFxkHx+co1qiYKKco98fXaLcIaEgHWLgnl/iHaAhnZ8hol3iH97eohthYCMdJB7f3eKaIt/jXKTeX51jGmMgYh1j3t9e4hviIR7eYx/eoODdYKGcoGFh3aNfXt7iWmIgYx0knh9dotmjYCNZZV2fZpuYr1qXah+cXaVhml3sl1rsGB9knB/ll+UhmqNdY19cI2UT52PVJqCdYh+dZpihJRmkXiAjXJvrVtzqGl9hoOCeW+nZHKjZoWIc4aNXJ9/ZZZ3hXx3i5BUoIlZmH19g3l8m1mNlGGPeYCIdXOoXHyfZoV/gIZ7a6hmcaJrg4J7hoVho3donXKCgHiGj1ifh2CWeoCBd4GZV5KUX5B9f4R4eKNbg51kiX6Ah3lsqGRzomuDgH6Hf2KocWmgcIGBeYeMWKCEYJd/c3Bzh5aJiHN2coCJhIV3d4OEgZB5b3Z0iYyTi3RubXaJko+JdnFuf4eIjIByfH9/jX97cXeHiI6PdmxwdIiQk49yb213iY2MinV0en+HgoR4doOHhol9c254iI+SjHZta3aIkJCLdnBwfYeIiIB2e4GCh4B6cniFjI+Ld25rd4mQlYp0cGx5iY2MhnV3eH6JgoF5d4GIiIp6c3F2iI+Si3ZsbHiIkJCJdHJyfYiIh352fYGCiX55cniGjI+Ld25teImQkot1bpJ3hISFXIp/enijcX2Gi12Nfn95mnCChoJsi396f4x0fY18d4p9eIZ7d4KUcIaHeHKRbYKBkm+KgX9vkm2DgpFtjX9+bY9whIOMb4uBe3eLdoGFfnaHiHiBhnh8h3J/g412i398dotrhoGPcpB9fnKMaYmCjXKRen12i2uKg4N0jXx8fIdyh4N5fIeDeIeBeYGHbYODiXSPfHx5imeJf4xzk3p+dotmjYGJdJJ4fniJbIyCgHiNe3yAhXKHhXZ9iIN4iIJ5fohthZtSj5BsfZB3i3CHhmagcm+gfVe1clumfHSAh4V3a6htZatrfIt0gJhUlJVcjoOCeniGlVSWlVeVhHWIgHCeZX2WaY96fY54ZrBlaqZveoSCg35ppm9pom2BhnaCk1iai2CUe4J/doOZVJaUW5J/e4R6dqJfgptkinx/h3psq2ZxoGyCfoCIf2SocmagcoB/fIaKW6CDYJl4gYB3gZZXlZJdkX5/gnd7oFiIm2CLf36Ge2+nYnigaIZ/fYh/YqtuaqBwgYF7h4dcpHxriImLjntqdHKKkpSId3BtfYeLi4hyeXp9i4CCdneChoiQeW9yd4WNl4t0bG11iJKPinR0cn6IiId9dH2EgYmAenB3iYmPj3ZtbnaIkJOLdXBteomLi4V3dnmCh4GBd3eCiYmLenFteIeQk4t2bWx3iZCPiHZycn2Hh4Z9dn2Chol8eXF3houQi3ZubHeJj5OLdHFveoiLi4R1ent/iIJ+d3eDiIqLeXFueIiPlIp2bW14iI+Qh3R1dH2IhoV8dn+Dhol8eHB4hod5fZF7cI+HZoKFeHGgeneIimKId314nXaEgodki3aBe5hyiYB+bo1yg4iLbYiGdHqPdIGHenaFjHWBiHh1jXJ+gZJxh4R9cI9tgoKScI1+gG6NbYeAjnCNfX51i3CHg4N0iYB6fol0gYZ3e4aIdoWFenuJbYGCjHSQfX51imiJf410kHiBdIprjICHdJB4fXiJb4qDgHeKf3qChHaEhnN/hYV3in97fohrhoCLdJF6f3eKZo1/i3SSd4B3immNgIV1knh8gHN3mIJthZJpeJlzapmGaYeQbHqOd3WSgHCIiHB/jXd4jIB0hoJ2g4d4hIZ5e4l6eImDdoaDeX2IenqIgXaEhnd8iXt5h4F3g4Z4f4h8eoeAeIKFeX+FfXuFf3uB");
