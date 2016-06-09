@@ -28,8 +28,13 @@ $tx=  	clean($_POST["tx"]);
 $user= 	1 * $_POST["user"];
 $data=  $_POST["data"]; // can't sanitize this one
 
+// validate user input:
 if(!$cmd)	die("err: no cmd");	
 if(!$room)	die("err: no room");
+if( strlen($cmd) >  11 ) die("err: no cmd");
+if( strlen($room) > 32 ) die("err: no room");
+if( strlen($data) > (1024 * 64) ) die("err: overflow");
+
 
 ///////////////////////////////////////////////	
 // set file path and make sure it's legit:
