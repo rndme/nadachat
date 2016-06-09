@@ -1,84 +1,26 @@
 (function(){  "use strict"; // nadachat js application file [CCBY4] 
 
 var api = {},
-app = {
+app = { // properties and methods used by the app
+
+// properties:
 	room: location.hash.slice(1) || get64RandomChars().slice(-32),	// conversation ID used by server API to dispatch
 	isAlice: !location.hash.slice(1),	// is this device the one starting the conversation?
 	workerURL: "", 		// used to hold the blobURL generated from fetching the worker code with ajax
 	pollPeriod: 300, 	// # of ms to wait before re-connecting an http long-poll
 	messageIDs: {}, 	// a look up table of used message ID
 	readyState: 0,  		// application lifecycle stage (0-8)
-	counter: 0,			// how many messages have been recieved?
+	counter: 0,		// how many messages have been recieved?
 
-
+// methods:
 	BOOT: function() {
 		location.replace("#");
 		$(document.body).removeClass("loading");
 
 		if(this.isAlice) { // gen ecc curve, ajax to server, update hash and on-screen info from splash to waiting...
-			// add some entropy, we got important work to attend to...
-			STAMP+= rndme._stamp();
-			STAMP+= rndme.crypto("int", 150, Number);
-				
-			// gen and send pubkey
-			getWorker(function(e) {
-				var ob = e.data.data;
-				app.pubkey = ob;				
-				api.publicKey({
-					pubkey: {
-						x: ob.pubx,
-						y: ob.puby
-					}
-				}).then(function() {
-					app.SET_STATE(1);
-				});
-			}, {
-				type: "ecc",
-				STAMP: STAMP + 
-					rndme._stamp() + 
-					[].join.call(crypto.getRandomValues(new Int32Array(32)), "").replace(/\W/g,"")+
-					rndme.crypto("int", 150, Number) + 
-					Math.random().toString().slice(3)+
-					rndme._stamp() 
-			});//end getWorker()
-
+			app.BOOT_ALICE();
 		} else { // alice or bob? bob:
-			app.SET_STATE(3)
-			api.ask().then(function(e) {
-				var st = performance.now();
-
-				try{
-					e=JSON.parse(e);
-				}catch(y){
-					return app.SET_STATE(7);
-				}
-				
-				// stop if there's any problem with the response or key
-				if(!e || !e.data || !e.data.pubkey) return app.SET_STATE(7);
-				
-				//set pubkey with response:
-				app.pubkey = e.data.pubkey;
-				
-				//now send aes key and iv to server/alice
-				var aes = {
-					iv: get64RandomChars(),
-					key: get64RandomChars(),
-					nonce: String(Array(24)).split("").map(get64RandomChars).join("")
-				};
-				app.aes = aes;
-				app.nonce=expandNonce(app.aes.nonce);
-				getWorker(function(e) {
-						//replace with one that's using a worker to ecc the payload:
-						api.privateKey(e.data).then(function() {
-							setTimeout(function(){app.SET_STATE(5);}, 444);
-						});
-					}, {
-						type: "encode",
-						pub: app.pubkey,
-						data: aes,
-						STAMP: STAMP
-				});
-			});
+			app.BOOT_BOB();
 		} // end if alice/bob?
 
 		// update invite URL link and textbox:
@@ -97,7 +39,6 @@ app = {
 		"</li>";
 
 	},
-
 	
 	SET_STATE: function(numState) {
 		app.readyState = numState;
@@ -127,7 +68,7 @@ app = {
 					iv: msg.iv, 
 					ct: msg.ct 
 				}).then(function(){ // sent, clear+focus message entry box to indicate
-						$("#taMsg").val("").focus();
+					$("#taMsg").val("").focus();
 				});	
 			}, {
 				type: "aesenc", 
@@ -137,8 +78,73 @@ app = {
 			},
 			app.DISCONNECT
 		);//end getWorker()
- }// end SEND()
+ },// end SEND_MESSAGE()
 
+ BOOT_ALICE: function(){
+	// add some entropy, we got important work to attend to...
+	STAMP+= rndme._stamp();
+	STAMP+= rndme.crypto("int", 150, Number);
+		
+	// gen and send pubkey
+	getWorker(function(e) {
+		var ob = e.data.data;
+		app.pubkey = ob;				
+		api.publicKey({
+			pubkey: {
+				x: ob.pubx,
+				y: ob.puby
+			}
+		}).then(function() {
+			app.SET_STATE(1);
+		});
+	}, {
+		type: "ecc",
+		STAMP: (
+			STAMP + 
+			rndme._stamp() + 
+			[].join.call(crypto.getRandomValues(new Int32Array(32)), "").replace(/\W/g,"")+
+			rndme.crypto("int", 150, Number) + 
+			Math.random().toString().slice(3)+
+			rndme._stamp() 
+		)
+	});//end getWorker()	 
+ },
+ 
+  BOOT_BOB: function(){
+			app.SET_STATE(3)
+			api.ask().then(function(e) {
+				try{ // in case the JSON is malformed, we assume it compromised, since that should never happen, bail
+					e=JSON.parse(e);
+				}catch(y){
+					return app.SET_STATE(7);
+				}
+				// stop if there's any problem with the response or key
+				if(!e || !e.data || !e.data.pubkey) return app.SET_STATE(7);
+				
+				//set pubkey with response:
+				app.pubkey = e.data.pubkey;
+				
+				//now send aes key and iv to server/alice
+				var aes = {
+					iv: get64RandomChars(),
+					key: get64RandomChars(),
+					nonce: String(Array(24)).split("").map(get64RandomChars).join("")
+				};
+				app.aes = aes;
+				app.nonce=expandNonce(app.aes.nonce);
+				getWorker(function(e) {
+						//replace with one that's using a worker to ecc the payload:
+						api.privateKey(e.data).then(function() {
+							setTimeout(function(){app.SET_STATE(5);}, 444);
+						});
+					}, {
+						type: "encode",
+						pub: app.pubkey,
+						data: aes,
+						STAMP: STAMP
+				});
+			});
+ },
 };// end app definition
 
 
@@ -149,7 +155,7 @@ app = {
 		return $.post( "/api/", {
 			cmd: 	method,
 			room:	app.room,	
-			tx: 		get64RandomChars().slice(-12), // a session-unique message id, used to detect repeated messages, otherwise meaningless
+			tx:		get64RandomChars().slice(-12), // a session-unique message id, used to detect repeated messages, otherwise meaningless
 			user: 	+app.isAlice,	// 1 or 0
 			data: 	e
 		}); // end post()
