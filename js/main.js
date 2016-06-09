@@ -15,19 +15,14 @@ app = {
 		location.replace("#");
 		$(document.body).removeClass("loading");
 
-		if(this.isAlice) {
-			// gen ecc curve, ajax to server, update hash and on-screen info from splash to waiting...
-			var st = performance.now(),
-				w = new Worker(app.workerURL);
-				
+		if(this.isAlice) { // gen ecc curve, ajax to server, update hash and on-screen info from splash to waiting...
+			// add some entropy, we got important work to attend to...
 			STAMP+= rndme._stamp();
 			STAMP+= rndme.crypto("int", 150, Number);
 				
-			w.onerror = console.error.bind(console);			
-			w.onmessage = function(e) {
-				var ob = e.data.data,
-					et = performance.now();
-
+			// gen and send pubkey
+			getWorker(function(e) {
+				var ob = e.data.data;
 				app.pubkey = ob;				
 				api.publicKey({
 					pubkey: {
@@ -36,22 +31,18 @@ app = {
 					}
 				}).then(function() {
 					app.SET_STATE(1);
-					console.log("ecc took", performance.now() - st, " total, to gen: ", et - st);
 				});
-				w.terminate();
-			}; // end onmessage()
-			
-			w.postMessage({
+			}, {
 				type: "ecc",
 				STAMP: STAMP + 
 					rndme._stamp() + 
 					[].join.call(crypto.getRandomValues(new Int32Array(32)), "").replace(/\W/g,"")+
-					rndme.crypto("int", 300, Number) + 
+					rndme.crypto("int", 150, Number) + 
 					Math.random().toString().slice(3)+
 					rndme._stamp() 
-			});
+			});//end getWorker()
 
-		} else {
+		} else { // alice or bob? bob:
 			app.SET_STATE(3)
 			api.ask().then(function(e) {
 				var st = performance.now();
@@ -69,29 +60,23 @@ app = {
 				app.pubkey = e.data.pubkey;
 				
 				//now send aes key and iv to server/alice
-				var w = new Worker(app.workerURL),
-				aes = {
+				var aes = {
 					iv: get64RandomChars(),
 					key: get64RandomChars(),
 					nonce: String(Array(24)).split("").map(get64RandomChars).join("")
 				};
 				app.aes = aes;
 				app.nonce=expandNonce(app.aes.nonce);
-					
-				w.onerror = console.error.bind(console);
-				w.onmessage = function(e) {
-					w.terminate();
-					//replace with one that's using a worker to ecc the payload:
-					api.privateKey(e.data).then(function() {
-						setTimeout(function(){app.SET_STATE(5);}, 444);
-					});
-				}; // end onmessage()
-
-				w.postMessage({
-					type: "encode",
-					pub: app.pubkey,
-					data: aes,
-					STAMP: STAMP
+				getWorker(function(e) {
+						//replace with one that's using a worker to ecc the payload:
+						api.privateKey(e.data).then(function() {
+							setTimeout(function(){app.SET_STATE(5);}, 444);
+						});
+					}, {
+						type: "encode",
+						pub: app.pubkey,
+						data: aes,
+						STAMP: STAMP
 				});
 			});
 		} // end if alice/bob?
@@ -133,33 +118,25 @@ app = {
 	},
 	
 	SEND_MESSAGE: function(e){
-	
-		$("#btnSend").prop("disabled", true);
-		
-		var messageIndex=app.counter, // copy index for async process safety
-		sendWorker=new Worker(app.workerURL);					
-		sendWorker.onerror=app.DISCONNECT; // possible tag mismatch, safety not guaranteed, bail
-
-		sendWorker.onmessage=function _SENDWorkerIncomingMessage(e){					
-			sendWorker.terminate();
-			
-			var msg=JSON.parse(e.data.data); // unpack sjcl's default aes string bundle to strip redundancy
-			
-			api.send({ 
-				i: messageIndex,  
-				iv: msg.iv, 
-				ct: msg.ct 
-			}).then(function(){ // sent, clear+focus message entry box to indicate
-					$("#taMsg").val("").focus();
-			});	
-		};
-		
-		sendWorker.postMessage({
-			type: "aesenc", 
-			key:  getMessageKeyByIndex(messageIndex) , 
-			data: $("#taMsg").val(), 
-			STAMP: STAMP 
-		});
+		$("#btnSend").prop("disabled", true);		
+		var messageIndex=app.counter; // copy index for async process safety
+		getWorker(function(e){					
+				var msg=JSON.parse(e.data.data); // unpack sjcl's default aes string bundle to strip redundancy
+				api.send({ 
+					i: messageIndex,  
+					iv: msg.iv, 
+					ct: msg.ct 
+				}).then(function(){ // sent, clear+focus message entry box to indicate
+						$("#taMsg").val("").focus();
+				});	
+			}, {
+				type: "aesenc", 
+				key:  getMessageKeyByIndex(messageIndex) , 
+				data: $("#taMsg").val(), 
+				STAMP: STAMP 
+			},
+			app.DISCONNECT
+		);//end getWorker()
  }// end SEND()
 
 };// end app definition
@@ -280,19 +257,16 @@ window.addEventListener("offline", app.DISCONNECT, false);
 					});		
 											
 					if(!aes) return;	// didn't find a pubkey-protected secret
-					
-					var w=new Worker(app.workerURL);					
-					w.onerror=console.error.bind(console);
-					w.onmessage=function(evt){				
-						w.terminate();
+					return getWorker(function(evt){				
 						app.aes=JSON.parse(evt.data.data);
 						app.nonce=expandNonce(app.aes.nonce);
 						delete app.aes.nonce; // delete orig from bob
 						api.begin().then(app.SET_STATE.bind(app, 5));
-					};
-
-					w.postMessage({type: "decode", ob: app.pubkey, data: aes.data });			
-					return;
+					}, { 
+						type: "decode", 
+						ob: app.pubkey, 
+						data: aes.data 
+					});				
 				}//end if private key incoming? (that functionality borrows this otherwise msg-only poll() transport)				
 				
 				// append any new messages the view:
@@ -303,12 +277,8 @@ window.addEventListener("offline", app.DISCONNECT, false);
 						app.messageIDs[line.tx]=1;						
 						app.counter++;	
 						if(app.counter===1) document.body.dataset.empty='false';
-						
-						var w=new Worker(app.workerURL);					
-						w.onerror=console.error.bind(console);
-						
-						w.onmessage=function(e){
-							w.terminate();
+												
+						getWorker(function(e){
 							line.data=e.data.data.trim();
 							
 							// if beep option enabled and tab no focused, beep:
@@ -325,13 +295,13 @@ window.addEventListener("offline", app.DISCONNECT, false);
 							clearTimeout(app.msgtimeout);
 							app.msgtimeout=setTimeout(function(){ $("#btnSend").prop("disabled", false);}, 200);
 							
-						};//end onmessage()
-						
-						w.postMessage({
+						}, {
 							type:"aesdec", 
 							key: getMessageKeyByIndex(line.data.i) , 
 							data: sjaes(line.data.iv, line.data.ct) 
 						});
+						
+						
 					}//end if new message?
 				}); // end line forEach()
 			});//end api.fetch()
@@ -440,10 +410,23 @@ rndme.motion("int", 40, function(s){
 });
 
 
+function getWorker(fnResponder, objMessage, fnError){
+	var w=new Worker(app.workerURL);					
+	w.onerror=function(e){
+		console.error(e);
+		if(fnError) fnError.call(w, e);
+		w.terminate();
+	};
+	w.onmessage=function(evt){				
+		w.terminate();
+		fnResponder.call(w, evt);
+	};
+	w.postMessage(objMessage);			
+	return w;
+}
 
-
-
-
+/////////////////////////////////////
+//// worker builder and boot starter
 setTimeout(function buildWorker(){ // load the worker code into a variable so that we can spawn fresh new workers without network IO:
 	rndme.time("int", 1000).then(function(s){
 		STAMP = s + STAMP;
