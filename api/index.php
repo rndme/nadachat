@@ -62,22 +62,23 @@ switch($cmd)	{
 function fetch(){ // use long-polling to return  a delayed read of the conversation file
 	global $data, $FILE, $bufferSize;	
 	$timeLast  = strtotime($data);
-	$misses=0;
 	$chunkSize= $bufferSize * 1;
+	$startTime= strtotime(date(DATE_RFC2822));
 	
 	while(1){
 		$strTimeFile = date(DATE_RFC2822, filemtime($FILE));
 		$timeFile = strtotime($strTimeFile);	
-		$sizeFile = filesize($FILE);
 		$diff= $timeLast - $timeFile;
-		$age=  strtotime(date(DATE_RFC2822)) - $timeLast ;
-		$misses++;			
-		if( ($diff < 0) || $misses > 96 ){
+		$timeNow = strtotime(date(DATE_RFC2822));
+		$age=  $timeNow - $timeLast ;
+		$openTime= $timeNow - $startTime; 
+		if( ($diff < 0) || $openTime > 28 ){
+			$sizeFile = filesize($FILE);
 			if($sizeFile < 4 && $age > 3600) write("#LEFT#"); // if over an hour of nothing, kill connection					
 			if($sizeFile > $bufferSize) $chunkSize = 30 * 1024 ; // if extra big, it's a private key packet.  (send() will clean it up soon enough)
 			die(substr( str_repeat(" ", $chunkSize) . $strTimeFile . "\n" . file_get_contents($FILE), -$chunkSize));	 // send tail of file only
 		}
-		usleep(280000);
+		usleep( $age > 40 ? 650000 : 200000); // wait 2/3rd sec if no messages for over 40 sec, else wait 1/5th second
 		clearstatcache();	
 	} // wend
 } // end fetch()
