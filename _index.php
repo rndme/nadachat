@@ -1,7 +1,7 @@
 <?php
 	$NONCE=base64_encode(getGoodRandom(16));
 	//header("Strict-Transport-Security: max-age=31536000; includeSubDomains"); // this is persisted by useragents, so it can't be used...
-	header("Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' fonts.googleapis.com cdnjs.cloudflare.com; media-src data:; font-src cdnjs.cloudflare.com fonts.gstatic.com; script-src 'self' 'nonce-" . $NONCE .  "'; child-src data: blob:");
+	header("Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' fonts.googleapis.com cdnjs.cloudflare.com; media-src data:; font-src cdnjs.cloudflare.com fonts.gstatic.com; script-src 'self' 'nonce-" . $NONCE .  "'  blob:; child-src data: blob:; connect-src 'self' ");
 	
 	function getGoodRandom($bytes = 32){
 		if (function_exists('random_bytes')) return random_bytes($bytes );
@@ -141,7 +141,8 @@
 					</h3> 
 				</div> 
 				<div class=panel-body>
-					other person has left the chat
+					Other participant has left the chat!<br>
+					<button class='btn btn-danger reload'>Start a New Chat</button>
 			  </div> 
 			</div>
 		
@@ -152,7 +153,8 @@
 					</h3> 
 				</div> 
 				<div class=panel-body>
-					You have attempted to join a chat in-progress, which not possible.
+					You attempted to join an expired chat or a chat in-progress, which not possible. <br>
+					<button class='btn btn-danger reload'>Start a New Chat</button>
 			  </div> 
 			</div>
 		
@@ -163,7 +165,8 @@
 					</h3> 
 				</div> 
 				<div class=panel-body>
-					Your network connection was dropped or altered, closing secure session.
+					Your network connection was expired, dropped, or altered; closing secure session.<br>
+					<button class='btn btn-danger reload'>Start a New Chat</button>
 			  </div> 
 			</div>	
 		
