@@ -245,9 +245,18 @@ $("#lnkBeep").click(function(e){
 // window events:
 window.addEventListener("offline", app.DISCONNECT, false);
 window.onhashchange=function(e){ // make it easier to paste in a new conversation id into an existing nadachat window
-  if( location.hash.slice(1) && /^#[\w\-\/]+$/.test(location.hash))	location.reload();
+	if( location.hash.slice(1) && /^#[\w\-\/]+$/.test(location.hash))	location.reload();
 };
 
+window.onunload=function(){ // send a message that user left when they leave
+  	if(app.readyState<5)  return;
+	var fd=new FormData();
+	 fd.append("cmd", "leave");
+	 fd.append("room", app.room);
+	 fd.append("user", +!app.isAlice);
+	navigator.sendBeacon("/api/", fd);
+};
+  
 /////////////////////////////////
 // fetches messages in the background using long-polling:
 (function poll(){ 			
@@ -258,14 +267,14 @@ window.onhashchange=function(e){ // make it easier to paste in a new conversatio
 				poll.lastDate = xhr.getResponseHeader("Date");
 				app.pollTimeout=setTimeout(poll, app.pollPeriod);			
 				
-				var respLines=response.split("\n"), 
+				var respLines=response.trim().split("\n"), 
 				 xdate=respLines[0].trim(); // try to suss out a datastamp from the first (padding) line
 				if(xdate) poll.lastDate =  xdate;								
 				if(response.trim().length < 50 && response.indexOf("#LEFT#")!==-1) return app.SET_STATE(6); // other party left
 				
 				// turn each line into a js object by parsing as json
 				var lines=respLines.slice(1).map(function(line){
-					return line && JSON.parse(line);
+					return line && line[0]==="{" && JSON.parse(line);
 				}).filter(Boolean);
 				
 				if(!lines.length) return; // nothing to do
@@ -450,5 +459,8 @@ setTimeout(function buildWorker(){ // load the worker code into a variable so th
 		});// end core fetch
 	});// end time() cb
 }, 120 );	
+
+
+window.app=app;
 
 }());
