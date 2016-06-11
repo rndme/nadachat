@@ -57,6 +57,13 @@ button#btnSend {
 	display:none
 }
 
+/* reload buttons on error and end panels */
+button.reload {
+	margin: 1em auto;
+	display: inherit;
+}
+
+
 /* toggle message controls visibility via app.readyState aka body[data-mode] */
   body[data-mode="5"] #btnSend,	
   body[data-mode="5"] #taMsg {
@@ -102,7 +109,7 @@ body.loading  .panel.setup {
 	opacity: 0;
 	transition: 533ms opacity,	333ms height;
 	position: relative;
-	top: 2em;
+	top: 1em;
 	left: -220vw;
 	width:100%;
 	z-index: 999999;
@@ -110,7 +117,11 @@ body.loading  .panel.setup {
 	overflow: hidden;
 	margin-bottom: 0em;
 	margin-top: -0.5em;
-	border-color: #222;
+	xborder-color: #222;
+}
+
+div#box {
+	margin-top: 1em;
 }
 
 body .panel.setup>.panel-heading {
@@ -149,6 +160,11 @@ body[data-mode="7"] .panel.setup[data-rs="7"] {
 	text-align:center
 }
 
+/* push down some of the panels */
+.panel.setup[data-rs='6'] {
+	margin-top: 0.5em;
+}
+
 div#info {
 	margin-top: 2em;
 	height: auto;
@@ -175,20 +191,24 @@ body[data-mode="5"] ul#ulList {
 #ulList li {
 	list-style: none;
 	margin-bottom: .3333em;
-	background: #1b1b1b;
+	background-color: #1b1b1b;
 	padding: .25em 0.5em;
 	white-space: pre-wrap;
 	color: #fff;
 	font-size: 110%;
+	transition: 400ms background-color;
 }
 
 /* differentiate us-vs-them on message in list */
 #ulList li.you {
-	background:#373737;
+	background-color:#373737;
 	color:#ccc;
 	opacity:.8
 }
 
+body #ulList>li.msg.new {
+	background-color: #04500d;
+}
 
 /* navigation styles (top bar) */
 .nav>li {
