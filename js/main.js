@@ -44,6 +44,7 @@ var app = { // properties and methods used by the app
 		}, 200);
 		if(numState == 5)$("#btnSend").prop("disabled", false);
 		if(numState > 5) $("#taMsg.btnSend").remove();
+		$("#main").prop("scrollTop",0);
 	},
 
 	RENDER: function() {
@@ -55,6 +56,8 @@ var app = { // properties and methods used by the app
 	},
 	
 	SEND_MESSAGE: function(e){
+		var val=$("#taMsg").val();
+		if(!val) return;
 		$("#btnSend").prop("disabled", true);		
 		var messageIndex=app.counter; // copy index for async process safety
 		getWorker(function(e){					
@@ -69,7 +72,7 @@ var app = { // properties and methods used by the app
 			}, {
 				type: "aesenc", 
 				key:  getMessageKeyByIndex(messageIndex) , 
-				data: $("#taMsg").val(), 
+				data: val, 
 				STAMP: STAMP 
 			},
 			app.DISCONNECT
@@ -78,7 +81,7 @@ var app = { // properties and methods used by the app
 	
 	ITEM: function(o) { // templates a LI string from a message object, used to render the inbox list:
 		var bonus = ((app.isAlice && o.user == 0) || (!app.isAlice && o.user == 1)) ? "" : " &gt;&gt; ";
-		return "<li class='item msg " + (bonus ? "you" : "them") + " ' id=msg_" + o.tx + "><div class=heading>" + 
+		return "<li class='item new msg " + (bonus ? "you" : "them") + " ' id=msg_" + o.tx + "><div class=heading>" + 
 			"<time>" + 
 				new Date(o.date).toLocaleTimeString() + 
 			"</time>" +
@@ -224,6 +227,18 @@ $("#pageurl").focus(function(){this.select();});
 // list item remove capability:
 $("#ulList").on("click", ".rem", function(e){
 	$(e.target.parentNode).remove();
+	e.preventDefault();
+	return false;
+});
+
+// reload buttons on conversation end and error panels:
+$(".reload").click(function(e){
+	location.reload();
+});
+
+// focus the send message box when focusing the tab/window:
+$(window).on('focus', function() { 
+	setTimeout(function(){$("#taMsg").focus();}, 50);
 });
 
 // keep the invite link from accidental clicks by user:
@@ -249,7 +264,6 @@ window.onhashchange=function(e){ // make it easier to paste in a new conversatio
 };
 
 window.onunload=function(){ // send a message that user left when they leave
-  	if(app.readyState<5)  return;
 	var fd=new FormData();
 	 fd.append("cmd", "leave");
 	 fd.append("room", app.room);
@@ -298,6 +312,11 @@ window.onunload=function(){ // send a message that user left when they leave
 						
 						// add message to list
 						$("#ulList").append(app.ITEM(line).trim().replace(/<a /g, "<a target=_blank "));
+
+						setTimeout(function(){
+								var elm=$("#msg_"+line.tx).removeClass("new");
+						}, 150);
+						
 						$("#ulList li:last-child")[0].scrollIntoView(true);
 						
 						// use this opportunity to add some timing to add a digit to STAMP
@@ -434,7 +453,6 @@ rndme.motion("int", 40, function(s){
 
 
 
-
 /////////////////////////////////////
 //// worker builder and boot starter
 setTimeout(function buildWorker(){ // load the worker code into a variable so that we can spawn fresh new workers without network IO:
@@ -461,7 +479,5 @@ setTimeout(function buildWorker(){ // load the worker code into a variable so th
 	});// end time() cb
 }, 120 );	
 
-
-window.app=app;
 
 }());
