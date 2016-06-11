@@ -9,7 +9,7 @@ Goals:
 *//////////////////////////////////////////////
 // configuration:
 $messageFolderPath =  __DIR__ .  '/inbox/' ; // a rw folder where keys and message temporarily live
-$debug = FALSE; // should text results be echoed to host after other-wise void commands run?
+$debug = 0; // should text results be echoed to host after other-wise void commands run?
 $bufferSize = 3076;	// size of each message, minimum. for hiding conversation details over the net, also sets stored message queue size (double this value)
 $useUpgradedFilePerms = TRUE; // should chattr be applied to the message files (see inline usage, linux only, requires shell_exec())
 
@@ -68,10 +68,13 @@ function fetch(){ // use long-polling to return  a delayed read of the conversat
 	while(1){
 		$strTimeFile = date(DATE_RFC2822, filemtime($FILE));
 		$timeFile = strtotime($strTimeFile);	
+		$sizeFile = filesize($FILE);
 		$diff= $timeLast - $timeFile;
+		$age=  strtotime(date(DATE_RFC2822)) - $timeLast ;
 		$misses++;			
 		if( ($diff < 0) || $misses > 96 ){
-			if(filesize($FILE)> $bufferSize) $chunkSize = 30 * 1024 ; // if extra big, it's a private key packet.  (send() will clean it up soon enough)
+			if($sizeFile < 4 && $age > 3600) write("#LEFT#"); // if over an hour of nothing, kill connection					
+			if($sizeFile > $bufferSize) $chunkSize = 30 * 1024 ; // if extra big, it's a private key packet.  (send() will clean it up soon enough)
 			die(substr( str_repeat(" ", $chunkSize) . $strTimeFile . "\n" . file_get_contents($FILE), -$chunkSize));	 // send tail of file only
 		}
 		usleep(280000);
@@ -80,11 +83,10 @@ function fetch(){ // use long-polling to return  a delayed read of the conversat
 } // end fetch()
 
 function send(){ // append a message to file, truncating file if too big
-	global $data, $FILE, $tx, $user, $bufferSize;	
-	if( filesize( $FILE )  > ($bufferSize*2) )	write( substr( str_repeat(" ", ($bufferSize*2)) . file_get_contents($FILE), -($bufferSize*2))); // if file is too big, truncate it to fit
+	global $data, $FILE, $tx, $user, $bufferSize;		
+	if( filesize( $FILE )  > ($bufferSize*2) )	write( substr( str_repeat(" ", ($bufferSize)) . trim(file_get_contents($FILE)), -($bufferSize))); // if file is too big, truncate it to fit
 	$payload=array("date"=>strtotime(date(DATE_RFC2822))*1000, "cmd"=> 'send', "user"=>$user, "tx"=>$tx, "data"=>$data );
 	append($payload);
-	//$bufferSize-=138;
 	reply("wrote msg ");  
 }
 
@@ -129,7 +131,7 @@ function clean($str){
 // sends a response of a uniform size, if debug is active
 function reply($resp){
 	global $debug, $bufferSize;
-	if($debug) die(  substr( $resp , str_repeat(" ", $bufferSize) , 0, $bufferSize) );  	
+	if($debug) die(  substr( $resp . str_repeat(" ", $bufferSize) , 0, $bufferSize));
 	echo str_repeat(" ", $bufferSize);
 }
 
@@ -143,7 +145,7 @@ function write($strContents){
 function append($payload){
 	global $FILE;
 	$fh = fopen($FILE, 'a') or die();
-	fwrite($fh,   json_encode( $payload ). "\n");
+	fwrite($fh,   trim(json_encode( $payload )). "\n");
 	fclose($fh);	
 }
 
