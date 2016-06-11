@@ -4,10 +4,10 @@
 	10 	{app}
 	180	{api}
 	200	dom event handlers
-	250	poll()er for new messages
-	310	utility functions
-	410	gather entropy
-	430	build worker and start booting
+	260	poll()er for new messages
+	320	utility functions
+	420	gather entropy
+	440	build worker and start booting
 */
 var app = { // properties and methods used by the app
 
@@ -431,6 +431,7 @@ STAMP+= rndme.crypto("int", 300, Boolean).slice(-256);
 rndme.motion("int", 40, function(s){
 	STAMP+=s;
 });
+
 
 
 
