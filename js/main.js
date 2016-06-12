@@ -4,7 +4,7 @@
 	10 	{app}
 	185	{api}
 	200	dom event handlers
-	260	poll()er for new messages
+	275	poll()er for new messages
 	340	utility functions
 	440	gather entropy
 	460	build worker and start booting
@@ -146,7 +146,7 @@ var app = { // properties and methods used by the app
 			getWorker(function(e) {
 					// replace with one that's using a worker to ecc the payload:
 					api.privateKey(e.data).then(function() {
-						setTimeout(function(){app.SET_STATE(5);}, 444);
+						app.SET_STATE(4);
 					});
 				}, {
 					type: "encode",
@@ -166,6 +166,7 @@ var app = { // properties and methods used by the app
 		});		
 								
 		if(!aes) return;	// didn't find a pubkey-protected secret
+		app.SET_STATE(4);
 		getWorker(function(evt){				
 			app.aes=JSON.parse(evt.data.data);
 			app.nonce=expandNonce(app.aes.nonce);
@@ -275,7 +276,7 @@ window.onunload=function(){ // send a message that user left when they leave
 // fetches messages in the background using long-polling:
 (function poll(){ 			
 			if(app.readyState>5) return;			
-			if(![0,1,0,0,0,1][app.readyState]) return setTimeout(poll, app.readyState===5 ? app.pollPeriod : (app.pollPeriod*3) );
+			if(![0,1,0,1,1,1][app.readyState]) return setTimeout(poll, app.readyState===5 ? app.pollPeriod : (app.pollPeriod*3) );
 			
 			api.fetch(poll.lastDate).then(function(response, status, xhr){
 				poll.lastDate = xhr.getResponseHeader("Date");
@@ -297,6 +298,9 @@ window.onunload=function(){ // send a message that user left when they leave
 				// if alice is waiting for a bob response instead of a new message:
 				if(app.readyState===1) return app.PRIVATE_KEY_INCOMING(lines);
 
+				// if bob is responding, watch out for begin messages:
+				if(lines[0] && lines[0].cmd=="begin" && app.readyState!=5) return app.SET_STATE(5);
+				
 				// append any new messages the view:
 				lines.filter(function(line){
 					return line.cmd==="send";
@@ -333,7 +337,6 @@ window.onunload=function(){ // send a message that user left when they leave
 				}); // end line forEach()
 			});// end api.fetch()
 }());	
-
 ///////////////////////////////////////////////
 // utilities:
 
