@@ -145,6 +145,7 @@ body[data-mode="0"] .panel.setup[data-rs="0"],
 body[data-mode="1"] .panel.setup[data-rs="1"],	
 body[data-mode="2"] .panel.setup[data-rs="2"],	
 body[data-mode="3"] .panel.setup[data-rs="3"],	
+body[data-mode="4"] .panel.setup[data-rs="4"],	
 body[data-mode="5"] .panel.setup[data-rs="5"],	
 body[data-mode="6"] .panel.setup[data-rs="6"],	
 body[data-mode="7"] .panel.setup[data-rs="7"] {
@@ -161,7 +162,7 @@ body[data-mode="7"] .panel.setup[data-rs="7"] {
 }
 
 /* push down some of the panels */
-.panel.setup[data-rs='6'] {
+.panel.setup[data-rs='4'] {
 	margin-top: 0.5em;
 }
 
