@@ -75,7 +75,7 @@ function fetch(){ // use long-polling to return  a delayed read of the conversat
 		if( ($diff < 0) || $openTime > 28 ){
 			$sizeFile = filesize($FILE);
 			if($sizeFile < 4 && $age > 3600) write("#LEFT#"); // if over an hour of nothing, kill connection					
-			if($sizeFile > $bufferSize) $chunkSize = 30 * 1024 ; // if extra big, it's a private key packet.  (send() will clean it up soon enough)
+			if($sizeFile > $bufferSize*2) $chunkSize = 30 * 1024 ; // if extra big, it's a private key packet.  (send() will clean it up soon enough)
 			die(substr( str_repeat(" ", $chunkSize) . $strTimeFile . "\n" . file_get_contents($FILE), -$chunkSize));	 // send tail of file only
 		}
 		usleep( $age > 40 ? 650000 : 200000); // wait 2/3rd sec if no messages for over 40 sec, else wait 1/5th second
@@ -84,11 +84,13 @@ function fetch(){ // use long-polling to return  a delayed read of the conversat
 } // end fetch()
 
 function send(){ // append a message to file, truncating file if too big
-	global $data, $FILE, $tx, $user, $bufferSize;		
-	if( filesize( $FILE )  > ($bufferSize*2) )	write( substr( str_repeat(" ", ($bufferSize)) . trim(file_get_contents($FILE)), -($bufferSize))); // if file is too big, truncate it to fit
-	$payload=array("date"=>strtotime(date(DATE_RFC2822))*1000, "cmd"=> 'send', "user"=>$user, "tx"=>$tx, "data"=>$data );
-	append($payload);
-	reply("wrote msg ");  
+	global $data, $FILE, $tx, $user, $bufferSize;
+	if(strlen($data) < 1500) {
+		if( filesize( $FILE )  > ($bufferSize*2) )	write( substr( trim(file_get_contents($FILE)), -($bufferSize))); // if file is too big, truncate it to fit
+		$payload=array("date"=>strtotime(date(DATE_RFC2822))*1000, "cmd"=> 'send', "user"=>$user, "tx"=>$tx, "data"=>$data );
+		append($payload);
+		reply("wrote msg ");  
+	}
 }
 
 function publicKey(){ // write over file with incoming publicKey
