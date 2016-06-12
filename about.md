@@ -116,7 +116,7 @@ The EFF provides a [checklist of features](https://www.eff.org/node/82654) to ga
 
  1. **Encrypted in transit?** Yes.
  1. **Encrypted so the provider can't read it?** Yes.
- 1. **Can you verify contacts' identities?** No, contacts aren't saved/known; trust is "Time Of First Use".
+ 1. **Can you verify contacts' identities?** No, contacts aren't saved/known; trust is [Trust On First Use](https://en.wikipedia.org/wiki/Trust_on_first_use).
  1. **Are past communications secure if your keys are stolen?** Yes.
  1. **Is the code open to independent review?** Yes.
  1. **Is security design properly documented?** Yes, [available here](https://github.com/rndme/nadachat/blob/master/security.md).
