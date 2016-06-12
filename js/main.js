@@ -2,12 +2,12 @@
 /* table of contents:
   LINE	CODE ROLE
 	10 	{app}
-	180	{api}
+	185	{api}
 	200	dom event handlers
 	260	poll()er for new messages
-	320	utility functions
-	420	gather entropy
-	440	build worker and start booting
+	340	utility functions
+	440	gather entropy
+	460	build worker and start booting
 */
 var app = { // properties and methods used by the app
 
@@ -58,6 +58,7 @@ var app = { // properties and methods used by the app
 	SEND_MESSAGE: function(e){
 		var val=$("#taMsg").val();
 		if(!val) return;
+		if(val.length>1399) return alert("Messages must be under 1400 characters"), $("#taMsg").focus();
 		$("#btnSend").prop("disabled", true);		
 		var messageIndex=app.counter; // copy index for async process safety
 		getWorker(function(e){					
@@ -179,6 +180,7 @@ var app = { // properties and methods used by the app
 
 }, // end app definition
 
+
 api = {};
 ////////////////////////////////////////////////
 // build server interaction API's methods with pre-filled values:
@@ -193,8 +195,6 @@ api = {};
 		}); // end post()
 	};// end apu method
 }); // end forEach() of API method names
-
-
 
 
 
@@ -226,7 +226,7 @@ $("#pageurl").focus(function(){this.select();});
 
 // list item remove capability:
 $("#ulList").on("click", ".rem", function(e){
-	$(e.target.parentNode).remove();
+	$(e.target.parentNode.parentNode).remove();
 	e.preventDefault();
 	return false;
 });
@@ -283,7 +283,7 @@ window.onunload=function(){ // send a message that user left when they leave
 				
 				var respLines=response.trim().split("\n"), 
 				 xdate=respLines[0].trim(); // try to suss out a datastamp from the first (padding) line
-				if(xdate) poll.lastDate =  xdate;								
+				if(xdate && +new Date(xdate)) poll.lastDate =  xdate;								
 				if(response.trim().length < 50 && response.indexOf("#LEFT#")!==-1) return app.SET_STATE(6); // other party left
 				
 				// turn each line into a js object by parsing as json
@@ -333,6 +333,7 @@ window.onunload=function(){ // send a message that user left when they leave
 				}); // end line forEach()
 			});// end api.fetch()
 }());	
+
 ///////////////////////////////////////////////
 // utilities:
 
@@ -479,5 +480,7 @@ setTimeout(function buildWorker(){ // load the worker code into a variable so th
 	});// end time() cb
 }, 120 );	
 
+
+window.app=app;
 
 }());
