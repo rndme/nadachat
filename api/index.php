@@ -113,7 +113,7 @@ function ask(){ // fetch pubkey, then delete it
 }
 
 function begin(){ // clear AES keys and start conversation
-	write(" {}");
+	write("\n".'{"cmd":"begin"}');
 	reply("sanitized keys");
 }
 
