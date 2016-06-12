@@ -122,7 +122,20 @@
 			  </div> 
 			</div>
 						
-						
+				<div class="panel panel-default setup" data-rs=4> 
+				<div class=panel-heading> 
+					<h3 class=panel-title>
+						Confirming Invite
+					</h3> 
+				</div> 
+				<div class=panel-body>
+					<div class=progress>
+						<div class="progress-bar progress-bar-striped " role=progressbar></div>
+					</div> <br>
+					Validating secure transport...
+			  </div> 
+			</div>
+			
 			<div class="panel panel-primary setup" data-rs=5> 
 				<div class=panel-heading> 
 					<h3 class=panel-title> 
@@ -212,7 +225,7 @@
 
 	<footer id=footer class=row>
 		<span class=col-xs-10>
-			<textarea id=taMsg rows=5></textarea>
+			<textarea id=taMsg rows=5 maxlength=1400></textarea>
 		</span>
 		<span class=col-xs-2>
 			<button class="btn btn-default" id=btnSend disabled >Send</button>
