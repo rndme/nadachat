@@ -1,4 +1,4 @@
-(function(){  "use strict"; // nadachat js application file [CCBY4] 
+(function(STAMP){  "use strict"; // nadachat js application file [CCBY4] 
 /* table of contents:
   LINE	CODE ROLE
 	10 	{app}
@@ -480,7 +480,7 @@ setTimeout(function buildWorker(){ // load the worker code into a variable so th
 	});// end time() cb
 }, 120 );	
 
+// remove server-passed entropy and privatize pool by clobbering global seed:
+window.STAMP = null;
 
-window.app=app;
-
-}());
+}(STAMP));
