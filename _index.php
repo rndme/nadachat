@@ -22,10 +22,10 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name=viewport content="width=360, initial-scale=1">
 	
-    <link rel=icon href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAD10lEQVR42u2dwWoTQRjHBwS9VKqIpx5ET57MqTfBR+gj5BHyCHmEHG1NYSGlhRxCCgqCggVRUBDiG+QR8ghxv5nJEks3bZIm2Z3/7wffpdBs5j//nW/m25mNcwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA3cupeuA/unY8T1/bx3nXyuFojOsVnzT7brgM75Ng18g5pxg62Thrnf5u6bh7nIR5+DLH32U1ffn+0ctj/zz5r9tn+OnY9u65dPxik6b8X3DMnbt+LG+7kkRc+y6MfOuXg24Pp6x9707d/D7Yedl27vjdHP36vYIxRHDma/vvDSnd4u+jwXuhsuyN30dHLhn1Pb4renCGsPYwQC+90G0KHxR0+DHd3HTr8trB2WHuKEcLaae3lTndHeWT5HTKxu8Xy7ZtfT5Lo9LKw9lk73ZkfGSa+/aaD1Ez92LV847MwtKfe6YvM4FNFVpihle4Kw5ZPwe1+wpTK8H6vaaJfpIjM65VMx9tSKeb1wz/P6fAFYfoU8wXTrbZGsLxms98s5HY6fnkj+LlCFlcRtZkn2FKHjt+kERpVntz5HE/Hb9AIszlC5SaLNosd0PFbmSMM5lYNVak01qVKl0qY3r7SWJW0QKfsJnwdoeuN0MEAomEFpbnKYgMDiMazL3GSuIvnDHRANcIeUceUMNrqSgHxqxXucsspAdHFUwKCVzQl/Hw8zVPBZOPPFBC74iNBd8MjAULXZnLYwQDKZeSz+CwBAwiboLcBEyCu+EiAsOIjAaKKjwQIWvORYN3VAWLW3ATr1gkQMpE6warPDhAxkYqhPUBaZZsZAiayw+hTfJSMAYQfJff9fKCNAZQnheEk8xEGEI1XtuvY3oBy1/kAoiWYCoZLFIkQLOFUcJfNJAiW8LF1SwUYQDgVnPtU0MIAygdPbisQIZRAgWjRhBCRRB4YlR02QSSRg6hlowACiYwCZXMBBBJZEQxKVgSII1YixgDCo0DvhuogwsgdOs0wgHphCAOIbxqZ3y+AKGJp4Ou1NIAoWtH4/fT/NIAooquB2TZyBBEvCiGI+HIQQWSXg2MMoJwGwlvI9jGAqgEuYlkYMUQNcBkngoghvFXMjpEhhvC2cfshTMSQ3h9whQFUXyxhr6K14+SIIb4URAgMgBgYgMAABAYgMACBAQgMQKjsDRxjAErBiIEBCN3zAYjBfgAEUd0abr8zgBjsCUQQ1RoA28JFN4PYr4xwLkD+ZNAQA3A2EANwOhhBeD8AIVcBHGIA1eG/f+2HJhFF9FQwBhBf/mEAhn8MoDz7j/wDZcWpOgSN9lIAAAAASUVORK5CYII=">
+    <link rel=icon href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAb1BMVEUAAAAhuQwswxIPrQQFnwAAogAswxMwxxQpwBEnvxAguQ0WsAgTsAcAngAAlAAAmQAwyBUswxIpwREmvxAkvw8iug4jug4iug4euQscuQsYtAgatQsKqwAIowMJpQMKpQMAlgAAmwAAkAA80Bs1zBfqXBpsAAAAI3RSTlMAsPpyQgf++fXsu4mCMCIP/vTs5dvXzsWopKCRZ1xSTTgcF79dx4oAAAB3SURBVDjL7crXDoJAFAZhD7sUqfbe/33/ZzQxUQmETLhnbuebTY0pflyKo5kdzs43/Xu1LOhXsnev9m7KubpFp/oPPrtPivgLNNC2AqClB6D0DkCpB6DVE4ByAuEGQDsCoQKgkkBOYE0gIpAQyAhsCBgBB2BRvwGHA1YAeHZI+QAAAABJRU5ErkJggg==">
 	
     <!-- Bootstrap core CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/cyborg/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/cyborg/bootstrap.min.css" rel=stylesheet>
     <!-- Application CSS -->
 	<link href="css/main.css" rel=stylesheet>
 	
@@ -42,12 +42,12 @@
 		  
 		  <div class="col-xs-3 col-xs-offset-2">
 			<a id=lnkBeep href=# class=navbar-brand>			 
-				<b>beep: <span id=spnBeep>off</b>
+				<span id=spnBeep><span class="glyphicon glyphicon-volume-off" aria-hidden="true"></span>
 			</a>
 		  </div>
 		  
 		  <div class=col-xs-3>
-				<a href=# class="pull-right text-danger navbar-brand" id=btnLeave>exit</a>
+				<a href=# class="pull-right text-danger navbar-brand" id=btnLeave><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
 		  </div>
 	  
 		</div> <!-- /row -->
@@ -62,33 +62,33 @@
 			<div class="panel panel-default setup" data-rs=0> 
 				<div class=panel-heading> 
 					<h3 class=panel-title> 
-						Building Secure Keys
+					<span class="glyphicon glyphicon-cog spin" aria-hidden=true></span> 	Minting Encryption Keys
 					</h3> 
 				</div> 
 				<div class=panel-body>
 				<div class=progress>
 					<div class="progress-bar progress-bar-striped progress-bar-warning " role=progressbar></div>
 				</div> <br>
-					Generating Keys, please stand by.
+					Generating Keys, please stand by...
 			  </div> 
 			</div>
 				
 			<div class="panel panel-default  setup" data-rs=1> 
 				<div class=panel-heading> 
 					<h3 class=panel-title>
-						Initiate a secure connection
+					<span class="glyphicon glyphicon-link" aria-hidden=true></span> 	One-Time Conversation URL
 					</h3> 
 				</div> 
 				<div class="panel-body">
 					<div class=progress>
-						<div class="progress-bar progress-bar-striped active" role=progressbar></div>
+						<div class="progress-bar progress-bar-striped active progress-bar-success" role=progressbar></div>
 					</div> <br>
-					Waiting for other party to join...
+					Waiting for someone else to join...
 									<hr>
 					
-					Send someone <a href id=pageurlLink disabled> this URL invite</a>:  <br><br>
+					Send someone <a href id=pageurlLink disabled> this unique URL invite</a> <b>:</b>  <br><br>
 					<input id=pageurl size=50 ><br><br>
-					When they arrive on the link, you'll be able to securely chat.
+					Chat opens when they arrive at the url
 
 			  </div> 
 			</div>		
@@ -96,14 +96,14 @@
 			<div class="panel panel-default setup" data-rs=2> 
 				<div class=panel-heading> 
 					<h3 class=panel-title>
-						Securing Connection
+						<span class="glyphicon glyphicon-cog spin" aria-hidden=true></span>  Securing Connection...
 					</h3> 
 				</div> 
 				<div class=panel-body>
 					<div class=progress>
 						<div class="progress-bar progress-bar-striped " role=progressbar></div>
 					</div> <br>
-					Confirming Invite and Connecting.
+					Confirming Invite and Connecting. 
 			  </div> 
 			</div>
 
@@ -111,21 +111,21 @@
 			<div class="panel panel-default setup" data-rs=3> 
 				<div class=panel-heading> 
 					<h3 class=panel-title>
-						Secure Invite Found!
+						<span class="glyphicon glyphicon-cog spin" aria-hidden=true></span>  Secure Invite Found!
 					</h3> 
 				</div> 
 				<div class=panel-body>
 					<div class=progress>
 						<div class="progress-bar progress-bar-striped " role=progressbar></div>
 					</div> <br>
-					Encrypting secure transport...
+					Encrypting secure transport... <em> This can take a while, please be patient. </em></small>
 			  </div> 
 			</div>
 						
 				<div class="panel panel-default setup" data-rs=4> 
 				<div class=panel-heading> 
 					<h3 class=panel-title>
-						Confirming Invite
+					<span class="glyphicon glyphicon-cog spin" aria-hidden=true></span> 	Confirming Invite
 					</h3> 
 				</div> 
 				<div class=panel-body>
@@ -139,7 +139,7 @@
 			<div class="panel panel-primary setup" data-rs=5> 
 				<div class=panel-heading> 
 					<h3 class=panel-title> 
-						Connection Secure
+					<span class="glyphicon glyphicon-ok-sign" aria-hidden=true></span>	Connection Secure
 					</h3> 
 				</div> 
 				<div class=panel-body>
@@ -150,36 +150,48 @@
 			<div class="panel panel-warning setup" data-rs=6> 
 				<div class=panel-heading> 
 					<h3 class=panel-title> 
-						Connection Idle
+					<span class="glyphicon glyphicon-warning-sign" aria-hidden=true></span> 	Connection Idle
 					</h3> 
 				</div> 
 				<div class=panel-body>
 					Other participant has left the chat!<br>
-					<button class='btn btn-danger reload'>Start a New Chat</button>
+					<button class='btn btn-success reload'>Start a New Chat</button>
 			  </div> 
 			</div>
 		
 			<div class="panel panel-danger setup" data-rs=7> 
 				<div class=panel-heading> 
 					<h3 class=panel-title> 
-						Authentication Error
+					<span class="glyphicon glyphicon-warning-sign" aria-hidden=true></span> 	Authentication Error
 					</h3> 
 				</div> 
 				<div class=panel-body>
 					You attempted to join an expired chat or a chat in-progress, which not possible. <br>
-					<button class='btn btn-danger reload'>Start a New Chat</button>
+					<button class='btn btn-success reload'>Start a New Chat</button>
 			  </div> 
 			</div>
 		
 			<div class="panel panel-danger setup" data-rs=8> 
 				<div class=panel-heading> 
 					<h3 class=panel-title> 
-						Network Error
+						<span class="glyphicon glyphicon-warning-sign" aria-hidden=true></span>  Network Error
 					</h3> 
 				</div> 
 				<div class=panel-body>
 					Your network connection was expired, dropped, or altered; closing secure session.<br>
-					<button class='btn btn-danger reload'>Start a New Chat</button>
+					<button class='btn btn-success reload'>Start a New Chat</button>
+			  </div> 
+			</div>		
+			
+			<div class="panel panel-danger setup" data-rs=9> 
+				<div class=panel-heading> 
+					<h3 class=panel-title> 
+						<span class="glyphicon glyphicon-warning-sign" aria-hidden=true></span>  Session Timeout
+					</h3> 
+				</div> 
+				<div class=panel-body>
+					Connection to server was closed due to inactivity or by a participant leaving early<br>
+					<button class='btn btn-success reload'>Start a New Chat</button>
 			  </div> 
 			</div>	
 		
@@ -190,30 +202,47 @@
 			<div id=info class="panel panel-default setup"  >
 				<div class=panel-heading> 
 					<h3 class=panel-title> 
-						About
+						<span class="glyphicon glyphicon-info-sign" aria-hidden=true></span> About
+						
+						<span class="pull-right dropper glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+						<span class="pull-right dropper glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+						
 					</h3> 
 				</div> 
 				<div class=panel-body>				
 					<div class=row>
 					<div class="col-md-8 col-md-offset-2">
-					<p>nadachat is a free secure messaging service. </p>
+					<h3>nadachat is a free secure messaging service. </h3>
 					
-					<div>
-						It uses strong end-to-end encryption to protect conversations from:
-					</div>
+					<p>
+						End-to-End Encryption protects from hackers, criminals, ISPs/Employers, and overseers.
+					</p>
 					
-					  <ul class=list>
-						<li>hackers
-						<li>criminals
-						<li>service providers
-						<li>overseers
-					  </ul>
-						It's a free service as well as an open-source web application you can host yourself.
+					
+									
+				<div id=faqbox>
+					<h3 id="faq">FAQ</h3>
+					<h4 id="how-long-can-a-message-be-">How long can a message be?</h4>
+					<p>Messages are limited to 1400 characters, or 10X more than a tweet. The relatively small message size ensures that the unique encryption key used for each message is not stretched too thin.</p>
+					<h4 id="how-long-can-a-conversation-last-">How long can a conversation last?</h4>
+					<p>There is no time limit, but conversations with no message for one hour will be automatically destroyed. There's also a one-hour limit of wait time between generating a URL invite and starting a conversation, which ensures that encryption keys are always fresh.</p>
+					<h4 id="how-safe-are-my-conversations-">How safe are my conversations?</h4>
+					<p>Really really safe. nadachat uses state of the art Elliptical Curve (521bit) and AES256 encryption, per-message unique keys (with future and backward secrecy), and authenticated encryption modes that ensure message integrity. See the security plan for more info.</p>
+					<h4 id="why-does-reloading-destroy-the-conversation-">Why does reloading destroy the conversation?</h4>
+					<p>By design, a lost or broken conversation cannot be restored or recovered. Since nadachat never stores encryption keys, the codes needed to communicate are lost forever when the tab is closed or reloaded.</p>
+					<h4 id="how-does-this-make-money-">How does this make money?</h4>
+					<p>It doesn't, but it doesn't cost very much to run either, so consider it a gift; you're welcome.</p>
+				</div>
+
+  <h3>More Info</h3>
 					 <ul class=list>
 						<li><a href="https://github.com/rndme/nadachat/blob/master/about.md" target=_blank >Read more about nadachat</a>
 						<li><a href="https://github.com/rndme/nadachat/blob/master/security.md" target=_blank>Review nadachat's security strategy</a>
 						<li><a href="https://github.com/rndme/nadachat" target=_blank>View nadachat's Source Code on GitHub</a>
 					</ul>
+					
+
+					
 					</div>
 					</div>
 				</div>
