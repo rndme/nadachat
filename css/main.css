@@ -63,6 +63,13 @@ button.reload {
 	display: inherit;
 }
 
+/* exit button styles */
+#btnLeave {
+	position: relative;
+	top: 3px;	
+	opacity: 0.75;
+}
+
 
 /* toggle message controls visibility via app.readyState aka body[data-mode] */
   body[data-mode="5"] #btnSend,	
@@ -81,7 +88,8 @@ body[data-mode="5"] #info{
 	border:1px solid #777;
 	padding:.5em 1em;
 	width:35em;
-	max-width:97%
+	max-width:97%;
+	text-align: center;
 }
 
 /* jazz up "main" waiting panel */
@@ -148,7 +156,9 @@ body[data-mode="3"] .panel.setup[data-rs="3"],
 body[data-mode="4"] .panel.setup[data-rs="4"],	
 body[data-mode="5"] .panel.setup[data-rs="5"],	
 body[data-mode="6"] .panel.setup[data-rs="6"],	
-body[data-mode="7"] .panel.setup[data-rs="7"] {
+body[data-mode="7"] .panel.setup[data-rs="7"],
+body[data-mode="8"] .panel.setup[data-rs="8"],
+body[data-mode="9"] .panel.setup[data-rs="9"] {
 	height: auto;
 	opacity: 1;
 	left: 0em;
@@ -162,15 +172,48 @@ body[data-mode="7"] .panel.setup[data-rs="7"] {
 }
 
 /* push down some of the panels */
+.panel.setup[data-rs='7'] ,
 .panel.setup[data-rs='4'] {
 	margin-top: 0.5em;
 }
 
+/* style about information panel */
 div#info {
 	margin-top: 2em;
 	height: auto;
 	opacity: 1;
 	left: 0;
+}
+
+#info .panel-body {
+	padding: 1em;
+}
+
+/* hide about section by default */
+div#info .panel-body {
+	display: none;
+}
+
+div#info.shown  .glyphicon-chevron-down{
+	display: inherit;
+}
+
+div#info.shown  .glyphicon-chevron-down,
+div#info:not(.shown)  .glyphicon-chevron-up{
+	display: none;
+}
+
+div.shown h3 {
+	opacity: 0.75;
+}
+
+div#info.shown h3 {
+	opacity: 1;
+}
+/* FAQ formatting */
+#faqbox h4 {
+	margin: 0.5em 0 0 0;
+	opacity: 0.5;
 }
 
 /* messages list (inbox) */
@@ -220,8 +263,10 @@ body #ulList>li.msg.new {
 
 /* a splash of color */
 a.navbar-brand b {
-	color:#3ccf1b
+	color: rgba(221,221,221,0.75);
+	font-weight: normal;
 }
+
 
 /* align smaller text with "big" header */
 .navbar-inverse .navbar-nav>li>a {
@@ -233,6 +278,7 @@ a.navbar-brand b {
 /* scoot centered control to the left */
 a#lnkBeep {
 	margin-left: -2.5em;
+	margin-top: -0.1em;
 }
 
 /* scoot left badge to the right */
@@ -247,6 +293,36 @@ a#lnkBeep {
 	}
 }
 
+/* hover effects for buttons and links */
+#btnLeave:hover,
+#btnLeave:focus,
+#lnkBeep:focus,
+#lnkBeep:hover {
+	opacity: 1;
+}
+
+#lnkBeep {
+	opacity: 0.75;
+}
+
+#spnBeep {
+	font-size: 150%;
+}
+
+/* animation */
+@-webkit-keyframes spin {
+  0% {-webkit-transform: rotate(0deg);transform: rotate(0deg);}
+  100% {-webkit-transform: rotate(359deg);transform: rotate(359deg);}
+}@keyframes spin {
+  0% {-webkit-transform: rotate(0deg);transform: rotate(0deg);}
+  100% {-webkit-transform: rotate(359deg);transform: rotate(359deg);}
+}
+.spin {
+  -webkit-animation: spin 2s infinite linear;
+  animation: spin 2s infinite linear;
+  display: inline-block;
+}
+
 
 /* bootstrap and theme one-off adjustments: */
 li p { margin: 0; }
@@ -255,5 +331,6 @@ li p { margin: 0; }
 .progress-bar {	width:100%; }
 .progress{	width: 35em; 	margin: 0 auto; max-width: 100%;}
 .panel-heading { padding: 0.33em;}
-.panel-body {padding: 5px;}
+[data-rs] .panel-body {	text-align: center;}
 .navbar-inverse {background: linear-gradient(to bottom, rgb(44, 44, 44) 0%,rgba(0, 0, 0, 0.45) 100%);}
+
