@@ -56,6 +56,7 @@ var app = { // properties and methods used by the app
 	},
 	
 	SEND_MESSAGE: function(e){
+		if(app.readyState!=5) return;
 		var val=$("#taMsg").val();
 		if(!val) return;
 		if(val.length>1399) return alert("Messages must be under 1400 characters"), $("#taMsg").focus();
@@ -249,11 +250,21 @@ $("#pageurlLink").click(function(e){
 	return false;
 })	;
 
+
+// toggle about section copy
+$("#info").click(function(e){
+	var div=$("#info");
+	div.toggleClass("shown");
+	$(".panel-body", div)[  div.hasClass("shown") ? "fadeIn" : "fadeOut" ]("slow");
+	
+});
+
 // toggle the sound feature on and off each click
 $("#lnkBeep").click(function(e){
-	var old=$("#spnBeep").text();
-	$("#spnBeep").text( old=="off" ? "on" : "off");
-	app.beep=old=="off";
+	var old=!app.beep;
+	$("#spnBeep").html( old ? '<span class="glyphicon glyphicon-volume-up" aria-hidden="true"></span>' : '<span class="glyphicon glyphicon-volume-off" aria-hidden="true"></span>');
+	app.beep=old;
+	
 	if(app.beep) beeper.play(); // preview a beep sound to adjust vol
 	e.preventDefault();
 });
@@ -285,7 +296,7 @@ window.onunload=function(){ // send a message that user left when they leave
 				var respLines=response.trim().split("\n"), 
 				 xdate=respLines[0].trim(); // try to suss out a datastamp from the first (padding) line
 				if(xdate && +new Date(xdate)) poll.lastDate =  xdate;								
-				if(response.trim().length < 50 && response.indexOf("#LEFT#")!==-1) return app.SET_STATE(6); // other party left
+				if(response.trim().length < 50 && response.indexOf("#LEFT#")!==-1) return app.SET_STATE( app.readyState==5 ? 6 : 9); // other party left
 				
 				// turn each line into a js object by parsing as json
 				var lines=respLines.slice(1).map(function(line){
