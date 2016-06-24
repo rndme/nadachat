@@ -83,12 +83,12 @@
 					<div class=progress>
 						<div class="progress-bar progress-bar-striped active progress-bar-success" role=progressbar></div>
 					</div> <br>
-					Waiting for someone else to join...
+					Waiting for someone else to join. &nbsp; ( <span id=spnTimeLeft>60:00</span> left to connect )
 									<hr>
 					
-					Send someone <a href id=pageurlLink disabled> this unique URL invite</a> <b>:</b>  <br><br>
+					Chat by sending someone <a href id=pageurlLink disabled> this URL invite</a> <b>:</b>  <br><br>
 					<input id=pageurl size=50 ><br><br>
-					Chat opens when they arrive at the url
+					The chat will open when they arrive at the url.
 
 			  </div> 
 			</div>		
@@ -212,7 +212,7 @@
 				<div class=panel-body>				
 					<div class=row>
 					<div class="col-md-8 col-md-offset-2">
-					<h3>nadachat is a free secure messaging service. </h3>
+					<h3>nadachat: free secure messaging. </h3>
 					
 					<p>
 						End-to-End Encryption protects from hackers, criminals, ISPs/Employers, and overseers.
@@ -221,27 +221,36 @@
 					
 									
 				<div id=faqbox>
-					<h3 id="faq">FAQ</h3>
-					<h4 id="how-long-can-a-message-be-">How long can a message be?</h4>
-					<p>Messages are limited to 1400 characters, or 10X more than a tweet. The relatively small message size ensures that the unique encryption key used for each message is not stretched too thin.</p>
-					<h4 id="how-long-can-a-conversation-last-">How long can a conversation last?</h4>
-					<p>There is no time limit, but conversations with no message for one hour will be automatically destroyed. There's also a one-hour limit of wait time between generating a URL invite and starting a conversation, which ensures that encryption keys are always fresh.</p>
-					<h4 id="how-safe-are-my-conversations-">How safe are my conversations?</h4>
-					<p>Really really safe. nadachat uses state of the art Elliptical Curve (521bit) and AES256 encryption, per-message unique keys (with future and backward secrecy), and authenticated encryption modes that ensure message integrity. See the security plan for more info.</p>
-					<h4 id="why-does-reloading-destroy-the-conversation-">Why does reloading destroy the conversation?</h4>
+					<h4>Can nadachat or my boss read what I type?</h4>
+					<p>Not in a million years, that's the whole point.</p>
+					
+					<h4>How safe are my conversations?</h4>
+					<p>nadachat uses "TOP SECRET" approved Elliptical Curve (521bit) and AES256 encryption, per-message unique keys (with future and backward secrecy), and authenticated encryption modes that ensure message integrity. 
+						See <a href="https://github.com/rndme/nadachat/blob/master/security.md" target=_blank>the security plan</a> for more info about the encryption 
+						and <a href="https://github.com/rndme/nadachat/blob/master/about.md" target=_blank>the about page</a>  for info about privacy.</p>
+					
+					<h4>Why does it take so long to connect?</h4>
+					<p>Generating fresh large encryption keys takes time. Using plain HTTPS instead of a specialized protocol also lowers performance, but it blends into web traffic and works without installing a chat application.</p>
+					
+					<h4>Do I need an account?</h4>
+					<p>No, nadachat doesn't know who you are and doesn't track what you're doing. Since nadachat does NOT authenticate users, consider asking simple <a href=https://en.wikipedia.org/wiki/Challenge%E2%80%93response_authentication target=_blank>challenge questions</a> at the start of a conversation to make sure you're talking to the right person. 
+				
+				
+					<h4>Why does reloading destroy the conversation?</h4>
 					<p>By design, a lost or broken conversation cannot be restored or recovered. Since nadachat never stores encryption keys, the codes needed to communicate are lost forever when the tab is closed or reloaded.</p>
-					<h4 id="how-does-this-make-money-">How does this make money?</h4>
-					<p>It doesn't, but it doesn't cost very much to run either, so consider it a gift; you're welcome.</p>
+				
+					<h4>How does this make money?</h4>
+					<p>It doesn't, but it doesn't cost very much to run either, so consider it a gift. In fact, not only can you use it for free, you can copy it and run it yourself since the <a href="https://github.com/rndme/nadachat" target=_blank> source code is open source on github</a>. </p>
+					
+					<h4>How long can a message be?</h4>
+					<p>Messages are limited to 1400 characters, or 10X more than a tweet. The relatively small message size ensures that the unique encryption key used for each message is not stretched too thin.</p>
+					
+					<h4>How long can a conversation last?</h4>
+					<p>There is no time limit, but conversations with no message for one hour will be automatically destroyed. There's also a one-hour limit of wait time between generating a URL invite and starting a conversation, which ensures that encryption keys are always fresh.</p>
+
 				</div>
 
-  <h3>More Info</h3>
-					 <ul class=list>
-						<li><a href="https://github.com/rndme/nadachat/blob/master/about.md" target=_blank >Read more about nadachat</a>
-						<li><a href="https://github.com/rndme/nadachat/blob/master/security.md" target=_blank>Review nadachat's security strategy</a>
-						<li><a href="https://github.com/rndme/nadachat" target=_blank>View nadachat's Source Code on GitHub</a>
-					</ul>
-					
-
+  
 					
 					</div>
 					</div>
