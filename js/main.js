@@ -2,12 +2,12 @@
 /* table of contents:
   LINE	CODE ROLE
 	10 	{app}
-	185	{api}
-	200	dom event handlers
-	275	poll()er for new messages
-	340	utility functions
-	440	gather entropy
-	460	build worker and start booting
+	200	{api}
+	215	dom event handlers
+	300	poll()er for new messages
+	360	utility functions
+	460	gather entropy
+	480	build worker and start booting
 */
 var app = { // properties and methods used by the app
 
@@ -34,6 +34,17 @@ var app = { // properties and methods used by the app
 		// update invite URL link and textbox:
 		$("#pageurl").val(location + "" + app.room);
 		$("#pageurlLink").prop("href", location + "" + app.room);
+		
+		// update connection count-down timer:
+		var dt=Date.now(),
+		timer = setInterval(function updateTime(){
+				var est = (Date.now()-dt), 
+				ms=3600000 - est,
+				et=new Date(ms).toISOString().split("T")[1].split(".")[0].slice(3);
+				if(ms < 5*60000 ) et = et.fontcolor("red");
+				if(ms < 1000  || app.readyState>4)  return clearInterval(timer);
+				$("#spnTimeLeft").html(et);			
+		}, 2000);
 	},
 
 	SET_STATE: function(numState) {
