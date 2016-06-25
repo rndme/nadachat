@@ -71,6 +71,7 @@ var app = { // properties and methods used by the app
 		var val=$("#taMsg").val();
 		if(!val) return;
 		if(val.length>1399) return alert("Messages must be under 1400 characters"), $("#taMsg").focus();
+		if(val.length<100) val = (val + " ".repeat(100)).slice(0, 100);
 		$("#btnSend").prop("disabled", true);		
 		var messageIndex=app.counter; // copy index for async process safety
 		getWorker(function(e){					
@@ -80,13 +81,14 @@ var app = { // properties and methods used by the app
 					iv: msg.iv, 
 					ct: msg.ct 
 				}).then(function(){ // sent, clear+focus message entry box to indicate
-					$("#taMsg").val("").focus();
+					var j=$("#taMsg").val("");
+					if(!navigator.userAgent.match(/mobile/i)) j.focus(); // kb is in the way of inbox on mobile, don't refocus send box
 				});	
 			}, {
 				type: "aesenc", 
 				key:  getMessageKeyByIndex(messageIndex) , 
 				data: val, 
-				STAMP: STAMP 
+				STAMP: STAMP + rndme._stamp()  + (crypto.getRandomValues(new Uint32Array(1))[0]*Math.random()).toString().slice(2,-2).replace(/\D/g,"")
 			},
 			app.DISCONNECT
 		);// end getWorker()
