@@ -42,8 +42,12 @@ var app = { // properties and methods used by the app
 				ms=3600000 - est,
 				et=new Date(ms).toISOString().split("T")[1].split(".")[0].slice(3);
 				if(ms < 5*60000 ) et = et.fontcolor("red");
-				if(ms < 1000  || app.readyState>4)  return clearInterval(timer);
-				$("#spnTimeLeft").html(et);			
+				if(app.readyState>4)  return clearInterval(timer);
+				$("#spnTimeLeft").html(et);
+				if(ms < 1000  || app.readyState>4){
+						app.SET_STATE(9);
+						clearInterval(timer);
+				}					
 		}, 2000);
 	},
 
