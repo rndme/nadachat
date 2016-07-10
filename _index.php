@@ -25,7 +25,7 @@
     <link rel=icon href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAb1BMVEUAAAAhuQwswxIPrQQFnwAAogAswxMwxxQpwBEnvxAguQ0WsAgTsAcAngAAlAAAmQAwyBUswxIpwREmvxAkvw8iug4jug4iug4euQscuQsYtAgatQsKqwAIowMJpQMKpQMAlgAAmwAAkAA80Bs1zBfqXBpsAAAAI3RSTlMAsPpyQgf++fXsu4mCMCIP/vTs5dvXzsWopKCRZ1xSTTgcF79dx4oAAAB3SURBVDjL7crXDoJAFAZhD7sUqfbe/33/ZzQxUQmETLhnbuebTY0pflyKo5kdzs43/Xu1LOhXsnev9m7KubpFp/oPPrtPivgLNNC2AqClB6D0DkCpB6DVE4ByAuEGQDsCoQKgkkBOYE0gIpAQyAhsCBgBB2BRvwGHA1YAeHZI+QAAAABJRU5ErkJggg==">
 	
     <!-- Bootstrap core CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/cyborg/bootstrap.min.css" rel=stylesheet>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/darkly/bootstrap.min.css" rel=stylesheet>
     <!-- Application CSS -->
 	<link href="css/main.css" rel=stylesheet>
 	
@@ -80,15 +80,23 @@
 					</h3> 
 				</div> 
 				<div class="panel-body">
+				
+												
+					Send partner this URL to initialize  secure chat:<br>
+					<a href id=pageurlLink disabled hidden >Conversation URL: </a> <br> <input id=pageurl size=50 > <br >
+					
+					
+									<hr>
+			
+			Waiting for partner to join  &nbsp; - &nbsp; <span id=spnTimeLeft>60:00</span> until invite key expiration
+			<br><br>
 					<div class=progress>
 						<div class="progress-bar progress-bar-striped active progress-bar-success" role=progressbar></div>
 					</div> <br>
-					Waiting for someone else to join. &nbsp; ( <span id=spnTimeLeft>60:00</span> left to connect )
-									<hr>
 					
-					Chat by sending someone <a href id=pageurlLink disabled> this URL invite</a> <b>:</b>  <br><br>
-					<input id=pageurl size=50 ><br><br>
-					The chat will open when they arrive at the url.
+									
+								
+					
 
 			  </div> 
 			</div>		
@@ -136,7 +144,7 @@
 			  </div> 
 			</div>
 			
-			<div class="panel panel-primary setup" data-rs=5> 
+			<div class="panel panel-default setup" data-rs=5> 
 				<div class=panel-heading> 
 					<h3 class=panel-title> 
 					<span class="glyphicon glyphicon-ok-sign" aria-hidden=true></span>	Connection Secure
@@ -212,10 +220,10 @@
 				<div class=panel-body>				
 					<div class=row>
 					<div class="col-md-8 col-md-offset-2">
-					<h3>nadachat: free secure messaging. </h3>
+					<h3>nadachat: safe and secure messaging </h3>
 					
 					<p>
-						End-to-End Encryption protects from hackers, criminals, ISPs/Employers, and overseers.
+						E2E Encryption protects from hackers, ISPs, Employers, and overseers
 					</p>
 					
 					
@@ -224,8 +232,12 @@
 					<h4>Can nadachat or my boss read what I type?</h4>
 					<p>Not in a million years, that's the whole point.</p>
 					
+					<h4>Why use this instead of something with more features?</h4>
+					<p>Nadachat runs in-browser without special settings/applications and without invasive tracking or registration.</p>
+				
+				
 					<h4>How safe are my conversations?</h4>
-					<p>nadachat uses "TOP SECRET" approved Elliptical Curve (521bit) and AES256 encryption, per-message unique keys (with future and backward secrecy), and authenticated encryption modes that ensure message integrity. 
+					<p>nadachat uses "TOP SECRET" approved Elliptical Curve (521bit) and AES256-GCM encryption, per-message unique keys (with future and backward secrecy), and authenticated encryption modes that ensure message integrity. 
 						See <a href="https://github.com/rndme/nadachat/blob/master/security.md" target=_blank>the security plan</a> for more info about the encryption 
 						and <a href="https://github.com/rndme/nadachat/blob/master/about.md" target=_blank>the about page</a>  for info about privacy.</p>
 					
@@ -262,10 +274,10 @@
 	</main>
 
 	<footer id=footer class=row>
-		<span class=col-xs-10>
-			<textarea id=taMsg rows=5 maxlength=1400></textarea>
+		<span class=col-xs-11>
+			<textarea id=taMsg rows=5 maxlength=1400 placeholder=" Compose Message... "></textarea>
 		</span>
-		<span class=col-xs-2>
+		<span class=col-xs-1>
 			<button class="btn btn-default" id=btnSend disabled >Send</button>
 		</span>	  
 	</footer>
