@@ -36,25 +36,39 @@ footer {
 #taMsg {
 	width:100%;
 	height:3em;
-	background:#222;
-	border:0;
+	background:#000;
+	border:1px solid #555;
 	color:#ddd;
 	padding:.33em;
 	resize:none;
 	outline-color: #fff;
+	transition: 200ms background;
 }
 
+#taMsg:focus{
+	border-color: #000;
+	background: #222;
+}
 /* send button */
 button#btnSend {
 	padding-top: 0.8em;
 	width: 100%;
 	min-width: 3.6em;
 	margin-left: -1.4em;
+	border: 0;
+	background: transparent;
+	float: right;
+	color: #999;
 }
 
+button#btnSend:focus {
+	color: #fff;
+	background: #222;
+}
 /* hide compose and send by default */
 #btnSend,	#taMsg {
-	display:none
+	display:none;
+	outline: 0;
 }
 
 /* reload buttons on error and end panels */
@@ -68,6 +82,7 @@ button.reload {
 	position: relative;
 	top: 3px;	
 	opacity: 0.75;
+	padding: 18px 0;
 }
 
 
@@ -83,12 +98,12 @@ body[data-mode="5"] #info{
 
 /* the offered url copy-and-paste input for invites */
 #pageurl {
-	background:#bbb;
-	color:#000;
-	border:1px solid #777;
-	padding:.5em 1em;
-	width:35em;
-	max-width:97%;
+	background: #000;
+	color: #fff;
+	border: 1px solid #777;
+	padding: .5em 1em;
+	width: 35em;
+	max-width: 97%;
 	text-align: center;
 }
 
@@ -101,9 +116,9 @@ body[data-mode="5"] #info{
 /* status panel css */
 
 /* move message panel off-screen extra to hide it's wide self when not needed */
-body[data-empty='false'] .panel.panel-primary.setup[data-rs='5'],
-body[data-empty='false'] .panel.panel-primary.setup[data-rs='6'],
-body[data-empty='false'] .panel.panel-primary.setup[data-rs='7']   {
+body[data-empty='false'] .panel.panel.setup[data-rs='5'],
+body[data-empty='false'] .panel.panel.setup[data-rs='6'],
+body[data-empty='false'] .panel.panel.setup[data-rs='7']   {
 	left:-500vw
 }
 
@@ -187,11 +202,11 @@ div#info {
 
 #info .panel-body {
 	padding: 1em;
+	display: none;
 }
 
-/* hide about section by default */
-div#info .panel-body {
-	display: none;
+#info .panel-title {
+	cursor: pointer;
 }
 
 div#info.shown  .glyphicon-chevron-down{
@@ -213,7 +228,13 @@ div#info.shown h3 {
 /* FAQ formatting */
 #faqbox h4 {
 	margin: 0.5em 0 0 0;
-	opacity: 0.5;
+		font-weight: bold;	
+}
+
+#faqbox h4 + p {
+  opacity: 0.75;
+  font-family: tahoma, arial, helvetica;
+  	text-shadow: 0 0 1px #000;
 }
 
 /* messages list (inbox) */
@@ -229,7 +250,7 @@ ul#ulList {
 
 /* pull list up when not any status messages:  */
 body[data-mode="5"] ul#ulList {
-	margin-top: -1em;
+	margin-top: -2.5em;
 }
 
 #ulList li {
@@ -281,9 +302,9 @@ a#lnkBeep {
 	margin-top: -0.1em;
 }
 
-/* scoot left badge to the right */
+/* scoot left badge to the left, to counter padding */
 .col-xs-4:first-child .navbar-brand {
-	margin-left: 0em;
+	margin-left: -15px;
 }
 
 /* mobile/desktop adjustments */
@@ -296,11 +317,13 @@ a#lnkBeep {
 /* hover effects for buttons and links */
 #btnLeave:hover,
 #btnLeave:focus,
+#info .panel-title:hover,
 #lnkBeep:focus,
 #lnkBeep:hover {
 	opacity: 1;
 }
 
+#info .panel-title,
 #lnkBeep {
 	opacity: 0.75;
 }
@@ -317,6 +340,7 @@ a#lnkBeep {
   0% {-webkit-transform: rotate(0deg);transform: rotate(0deg);}
   100% {-webkit-transform: rotate(359deg);transform: rotate(359deg);}
 }
+
 .spin {
   -webkit-animation: spin 2s infinite linear;
   animation: spin 2s infinite linear;
@@ -332,5 +356,11 @@ li p { margin: 0; }
 .progress{	width: 35em; 	margin: 0 auto; max-width: 100%;}
 .panel-heading { padding: 0.33em;}
 [data-rs] .panel-body {	text-align: center;}
-.navbar-inverse {background: linear-gradient(to bottom, rgb(44, 44, 44) 0%,rgba(0, 0, 0, 0.45) 100%);}
+.navbar-inverse {background: linear-gradient(to bottom, rgb(44, 44, 44) 0%,rgba(0, 0, 0, 0.45) 100%); margin-top: -0.5em;}
+.panel-default {	border-color: #222;}
+
+
+
+
+
 
