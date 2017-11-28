@@ -93,13 +93,13 @@ function send(){ // append a message to file, truncating file if too big
 	}
 }
 
-function publicKey(){ // write over file with incoming publicKey
+function publicKey(){ // write over file contents with incoming publicKey
 	global $data;
 	write("\n" . json_encode( array("cmd"=> 'publicKey', "data"=>$data ) ));
 	reply("wrote pubkey");  
 }
 
-function privateKey(){ // just append incoming aes key 
+function privateKey(){ // just append incoming aes key (already encrypted w/ pubkey)
 	global $data;
 	append(array("cmd"=> 'privateKey', "data"=>$data ));
 	reply( "wrote aes key");
@@ -112,7 +112,7 @@ function ask(){ // fetch pubkey, then delete it
 	echo $oldContents;
 }
 
-function begin(){ // clear AES keys and start conversation
+function begin(){ // clear encrypted AES keys and start conversation
 	write("\n".'{"cmd":"begin"}');
 	reply("sanitized keys");
 }
